@@ -41,7 +41,7 @@ A modern, interactive educational sandbox designed for Web Development Pedagogy,
 ## 🚀 如何啟動 | Getting Started
 1. **克隆此專案 (Clone the repo)**: 
    ```bash
-   git clone https://github.com/YourUsername/html-css-livecanvas.git
+   git clone https://github.com/LunarLunar/html-css-livecanvas.git
    ```
 2. **本地執行 (Local execution)**: 
    直接在任何現代瀏覽器開啟 `index.html` 即可開始使用。
