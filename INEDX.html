@@ -1,0 +1,3927 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8">
+    <title>HTML 與 CSS 協作教學 (全面合併終極版)</title>
+    <!-- Prism.js for accurate Syntax Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
+    <style>
+        /* Theme Variables */
+        :root {
+            --bg-body: #f0f2f5;
+            --bg-container: white;
+            --color-text: #333;
+            --color-heading: #2c3e50;
+            --color-subheading: #666;
+            --border-color: #eee;
+            --btn-bg: #fff;
+            --btn-text: #555;
+            --btn-border: #e0e0e0;
+            --code-bg: #282c34;
+            --code-text: #abb2bf;
+            --bg-panel: #f8f9fa;
+        }
+
+        body.theme-dark {
+            --bg-body: #1a1a1a;
+            --bg-container: #2d2d2d;
+            --color-text: #ccc;
+            --color-heading: #ecf0f1;
+            --color-subheading: #aaa;
+            --border-color: #444;
+            --btn-bg: #333;
+            --btn-text: #ccc;
+            --btn-border: #555;
+            --code-bg: #111;
+            --bg-panel: #383838;
+        }
+
+        body.theme-solar {
+            --bg-body: #fdf6e3;
+            --bg-container: #eee8d5;
+            --color-text: #657b83;
+            --color-heading: #b58900;
+        }
+
+        body.theme-blue {
+            --bg-body: #e3f2fd;
+            --bg-container: #bbdefb;
+            --color-heading: #1565c0;
+        }
+
+        body.theme-nature {
+            --bg-body: #e8f5e9;
+            --bg-container: #c8e6c9;
+            --color-heading: #2e7d32;
+        }
+
+        body {
+            font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 20px;
+            background-color: var(--bg-body);
+            color: var(--color-text);
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: auto;
+            background: var(--bg-container);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        h2 {
+            color: var(--color-heading);
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 12px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .theme-switcher {
+            font-size: 14px;
+            font-weight: normal;
+        }
+
+        .theme-btn {
+            background: none;
+            border: 1px solid var(--btn-border);
+            padding: 5px 10px;
+            cursor: pointer;
+            margin-left: 5px;
+            border-radius: 4px;
+            color: var(--color-text);
+        }
+
+        .category-nav {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+        }
+
+        .category-btn {
+            padding: 10px 20px;
+            background-color: var(--btn-bg);
+            color: var(--btn-text);
+            border: 2px solid var(--btn-border);
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .category-btn:hover {
+            border-color: #3498db;
+            color: #3498db;
+        }
+
+        .category-btn.active {
+            background-color: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+
+        .main-content {
+            display: flex;
+            gap: 25px;
+            min-height: 700px;
+        }
+
+        .sidebar {
+            width: 260px;
+            border-right: 1px solid var(--border-color);
+            padding-right: 15px;
+            flex-shrink: 0;
+            overflow-y: auto;
+            max-height: 700px;
+        }
+
+        .display-area {
+            flex-grow: 1;
+            min-width: 0;
+        }
+
+        .example-list button {
+            display: block;
+            width: 100%;
+            margin-bottom: 8px;
+            padding: 10px 15px;
+            background-color: var(--bg-panel);
+            color: var(--color-text);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+
+        .example-list button:hover {
+            background-color: #e2e6ea;
+            border-color: #adb5bd;
+        }
+
+        .example-list button.active {
+            background-color: #e7f5ff;
+            color: #1971c2;
+            border-color: #1971c2;
+            font-weight: bold;
+        }
+
+        h3 {
+            margin-top: 0;
+            color: #444;
+        }
+
+        .result-preview {
+            border: 2px dashed var(--border-color);
+            padding: 25px;
+            min-height: 200px;
+            overflow: auto;
+            background-color: #fff;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            position: relative;
+            display: block;
+        }
+
+        .result-preview::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image:
+                linear-gradient(45deg, #f5f5f5 25%, transparent 25%),
+                linear-gradient(-45deg, #f5f5f5 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #f5f5f5 75%),
+                linear-gradient(-45deg, transparent 75%, #f5f5f5 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+            z-index: 0;
+            border-radius: 6px;
+            pointer-events: none;
+        }
+
+        .result-preview>* {
+            position: relative;
+            z-index: 1;
+        }
+
+        .control-panel {
+            background-color: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .control-group {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .control-group-header {
+            font-weight: 700;
+            font-size: 15px;
+            color: #2c3e50;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #3498db;
+            cursor: pointer;
+            user-select: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .control-group-header::after {
+            content: '▼';
+            font-size: 12px;
+            transition: transform 0.2s;
+        }
+
+        .control-group-header.collapsed::after {
+            transform: rotate(-90deg);
+        }
+
+        .control-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px 20px;
+            max-height: 500px;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .control-grid.collapsed {
+            max-height: 0;
+        }
+
+        .control-item {
+            margin-bottom: 5px;
+        }
+
+        .control-item label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            font-weight: 600;
+            font-size: 13px;
+            color: #555;
+        }
+
+        .control-item input[type="range"],
+        .control-item input[type="text"],
+        .control-item select,
+        .control-item input[type="color"] {
+            width: 100%;
+            padding: 5px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+        }
+
+        .control-item input[type="color"] {
+            height: 40px;
+            padding: 2px;
+            cursor: pointer;
+        }
+
+        .unit-selector {
+            display: flex;
+            gap: 5px;
+            margin-top: 5px;
+        }
+
+        .unit-btn {
+            flex: 1;
+            padding: 4px 8px;
+            font-size: 11px;
+            border: 1px solid #ddd;
+            background: white;
+            cursor: pointer;
+            border-radius: 3px;
+            transition: all 0.2s;
+        }
+
+        .unit-btn.active {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+
+        .code-container {
+            display: flex;
+            gap: 20px;
+        }
+
+        .code-block {
+            flex: 1;
+            background-color: #282c34;
+            color: #abb2bf;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .code-block h4 {
+            color: #61afef;
+            margin-top: 0;
+            border-bottom: 1px solid #3e4451;
+            padding-bottom: 8px;
+            margin-bottom: 10px;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #3e4451;
+            padding-bottom: 8px;
+        }
+
+        .code-header h4 {
+            margin: 0;
+            border: none;
+            padding: 0;
+        }
+
+        .code-header-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        /* Playground specific styles */
+        .playground-mode .sidebar {
+            display: none;
+        }
+
+        .playground-mode .display-area {
+            /* Any specific display area adjustments */
+        }
+
+        .result-preview {
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            min-height: 400px;
+            position: relative;
+            background-image: radial-gradient(var(--border-color) 1px, transparent 1px);
+            background-size: 20px 20px;
+            z-index: 0;
+            border-radius: 6px;
+            pointer-events: auto;
+        }
+
+        .copy-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+            display: inline-block;
+        }
+
+        .js-btn {
+            background: #9b59b6;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+            display: inline-block;
+        }
+
+        .pg-btn {
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .pg-btn-init {
+            background: #e67e22;
+        }
+
+        .pg-btn-save {
+            background: #27ae60;
+        }
+
+        .pg-btn-load {
+            background: #3498db;
+        }
+
+        .pg-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            filter: brightness(1.1);
+        }
+
+        .pg-btn:active {
+            transform: translateY(0);
+        }
+
+        .playground-controls {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            display: flex;
+            gap: 8px;
+            z-index: 102;
+        }
+
+        .js-btn:hover {
+            background: #8e44ad;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .js-btn:active {
+            transform: translateY(0);
+        }
+
+        .js-btn.active {
+            background: #27ae60;
+        }
+
+        .copy-btn:hover {
+            background: #2980b9;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .copy-btn:active {
+            transform: translateY(0);
+        }
+
+        .copy-btn.copied {
+            background: #27ae60;
+        }
+
+        /* Highlight for last changed variable */
+        .highlight-changed {
+            background-color: #fff3cd;
+            color: #856404;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+            box-shadow: 0 0 0 2px #ffc107;
+        }
+
+        /* --- Live Editor Enhancement --- */
+        .live-editor-container {
+            position: relative;
+            width: 100%;
+            height: 800px;
+            margin-top: 0;
+            overflow: visible;
+        }
+
+        .live-editor-preview {
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: auto;
+            position: relative;
+            box-shadow: none;
+            z-index: 10;
+        }
+
+        /* Float Draggable Windows */
+        .floating-editor {
+            position: fixed;
+            /* Global floating */
+            width: 480px;
+            z-index: 9000;
+            /* Above everything */
+            cursor: default;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            border: 1px solid #444;
+            display: flex;
+            flex-direction: column;
+            background: #282c34;
+            border-radius: 8px;
+            transition: height 0.3s ease;
+        }
+
+        .floating-editor.collapsed {
+            height: 40px !important;
+            overflow: hidden;
+        }
+
+        .floating-editor.collapsed .editor-wrapper {
+            display: none;
+        }
+
+        .floating-editor.html-pos {
+            top: 100px;
+            left: 50px;
+        }
+
+        .floating-editor.css-pos {
+            top: 100px;
+            right: 50px;
+        }
+
+        .drag-handle {
+            background: #21252b;
+            padding: 10px 15px;
+            color: #abb2bf;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: move;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #181a1f;
+            user-select: none;
+            border-radius: 8px 8px 0 0;
+            height: 40px;
+            box-sizing: border-box;
+        }
+
+        .editor-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .minimize-btn {
+            background: #444;
+            color: white;
+            border: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            line-height: 1;
+        }
+
+        .minimize-btn:hover {
+            background: #666;
+        }
+
+        .drag-handle i {
+            font-style: normal;
+            opacity: 0.6;
+            font-size: 11px;
+        }
+
+        .editor-wrapper {
+            position: relative;
+            height: 450px;
+            background: #282c34;
+            border-radius: 0 0 8px 8px;
+            overflow: hidden;
+        }
+
+        .editor-textarea {
+            width: 100% !important;
+            height: 100% !important;
+            padding: 15px !important;
+            margin: 0 !important;
+            border: none !important;
+            outline: none !important;
+            box-sizing: border-box !important;
+
+            /* Professional Code Style: Single Layer stability */
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace !important;
+            font-size: 14.5px !important;
+            line-height: 1.6 !important;
+            background: #282c34 !important;
+            color: #d1d9e1 !important;
+            /* Clean code color */
+
+            white-space: pre-wrap !important;
+            word-wrap: break-word !important;
+            overflow-wrap: anywhere !important;
+            word-break: break-all !important;
+
+            tab-size: 4 !important;
+            -moz-tab-size: 4 !important;
+
+            resize: none !important;
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+            z-index: 10;
+        }
+
+        .editor-highlight {
+            display: none !important;
+        }
+
+        /* Custom Scrollbar Styling */
+        .editor-textarea::-webkit-scrollbar,
+        .live-editor-preview::-webkit-scrollbar,
+        .code-block::-webkit-scrollbar,
+        .sidebar::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        .editor-textarea::-webkit-scrollbar-track,
+        .live-editor-preview::-webkit-scrollbar-track,
+        .code-block::-webkit-scrollbar-track,
+        .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 5px;
+        }
+
+        .editor-textarea::-webkit-scrollbar-thumb,
+        .live-editor-preview::-webkit-scrollbar-thumb,
+        .code-block::-webkit-scrollbar-thumb,
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #3498db;
+            /* High contrast color */
+            border-radius: 5px;
+            border: 2px solid transparent;
+            background-clip: content-box;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+        }
+
+        .editor-textarea::-webkit-scrollbar-thumb:hover,
+        .live-editor-preview::-webkit-scrollbar-thumb:hover,
+        .code-block::-webkit-scrollbar-thumb:hover,
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: #2980b9;
+        }
+
+        /* Syntax highlighting colors - standard and stable */
+
+        /* Token colors for syntax highlighting */
+        .token-tag {
+            color: #e06c75;
+            font-weight: bold;
+        }
+
+        .token-attr {
+            color: #d19a66;
+        }
+
+        .token-string {
+            color: #98c379;
+        }
+
+        .token-comment {
+            color: #5c6370;
+            font-style: italic;
+        }
+
+        .token-selector {
+            color: #61afef;
+            font-weight: bold;
+        }
+
+        .token-property {
+            color: #abb2bf;
+        }
+
+        .token-value {
+            color: #98c379;
+        }
+
+        .token-punctuation {
+            color: #56b6c2;
+        }
+
+        .token-unit {
+            color: #c678dd;
+        }
+
+        .token-number {
+            color: #d19a66;
+        }
+
+        /* Smooth animation for category buttons */
+        .category-btn {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .category-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s;
+        }
+
+        .category-btn:active::after {
+            width: 200px;
+            height: 200px;
+        }
+
+        /* Split Pane Layout */
+        .playground-container {
+            display: flex;
+            height: 80vh;
+            min-height: 600px;
+            width: 100%;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            background: #fff;
+        }
+
+        .pg-pane {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .pg-editor-pane {
+            width: 40%;
+            min-width: 250px;
+            background: #282c34;
+            border-right: 1px solid #444;
+        }
+
+        .pg-preview-pane {
+            flex: 1;
+            min-width: 250px;
+            background: white;
+            position: relative;
+        }
+
+        .pg-splitter {
+            width: 10px;
+            background: #2c3e50;
+            cursor: col-resize;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            transition: background 0.2s;
+        }
+
+        .pg-splitter:hover {
+            background: #3498db;
+        }
+
+        .pg-splitter::after {
+            content: '⋮';
+            color: #888;
+            font-weight: bold;
+        }
+
+        .pg-sub-splitter {
+            height: 10px;
+            background: #181a1f;
+            cursor: row-resize;
+            width: 100%;
+            flex-shrink: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .pg-sub-splitter:hover {
+            background: #3498db;
+        }
+
+        /* Mobile Adjustments for Playground */
+        @media (max-width: 768px) {
+            .playground-container {
+                flex-direction: column !important;
+            }
+
+            .pg-editor-pane {
+                width: 100% !important;
+                height: 50%;
+                border-right: none;
+                border-bottom: 1px solid #444;
+            }
+
+            .pg-preview-pane {
+                width: 100% !important;
+                height: 50%;
+            }
+
+            .pg-splitter {
+                width: 100%;
+                height: 15px;
+                cursor: row-resize;
+            }
+
+            .pg-splitter::after {
+                content: '⋯';
+                transform: rotate(0deg);
+            }
+        }
+
+        .pg-code-box {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 100px;
+            position: relative;
+        }
+
+        .pg-header {
+            background: #21252b;
+            color: #abb2bf;
+            padding: 8px 15px;
+            font-size: 13px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #181a1f;
+        }
+
+        .pg-editor-wrapper {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Scrollbars for Editors */
+        .pg-editor-wrapper textarea {
+            width: 100%;
+            height: 100%;
+            border: none;
+            resize: none;
+            background: #282c34;
+            color: transparent;
+            /* Text is transparent, caret is visible */
+            caret-color: white;
+            padding: 15px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 2;
+            overflow: auto;
+            white-space: pre;
+            /* Important for Prism alignment */
+        }
+
+        .pg-editor-wrapper pre {
+            margin: 0;
+            padding: 15px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            overflow: hidden;
+            /* Scroll is controlled by textarea sync */
+            pointer-events: none;
+            /* Let clicks pass through to textarea */
+            background: #282c34;
+        }
+
+        /* Prism overrides for dark theme background match */
+        code[class*="language-"],
+        pre[class*="language-"] {
+            text-shadow: none !important;
+            background: transparent !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>
+            <span>🎨 HTML 與 CSS 協作教學 (全面合併終極版)</span>
+            <div class="theme-switcher">
+                主題:
+                <button class="theme-btn" onclick="setTheme('')">白 (預設)</button>
+                <button class="theme-btn" style="background:#333;color:white;"
+                    onclick="setTheme('theme-dark')">黑</button>
+                <button class="theme-btn" style="background:#fdf6e3;" onclick="setTheme('theme-solar')">暖陽</button>
+                <button class="theme-btn" style="background:#e3f2fd;" onclick="setTheme('theme-blue')">靛藍</button>
+                <button class="theme-btn" style="background:#e8f5e9;" onclick="setTheme('theme-nature')">自然</button>
+            </div>
+        </h2>
+
+        <div class="category-nav" id="categoryButtons"></div>
+
+        <div class="main-content">
+            <div class="sidebar">
+                <h4 style="color: #666; margin-bottom: 15px;">範例列表</h4>
+                <div id="exampleList" class="example-list"></div>
+            </div>
+
+            <div class="display-area">
+                <h3 id="previewTitle">預覽結果</h3>
+                <div id="resultPreview" class="result-preview">
+                    <div style="color: #777; text-align: center; padding-top: 60px;">請從上方選擇分類，再點選左側範例開始學習</div>
+                </div>
+
+                <div id="controlPanel" class="control-panel" style="display: none;">
+                    <h4
+                        style="margin-top: 0; border-bottom: 1px solid #ddd; padding-bottom: 10px; margin-bottom: 15px; color: #333;">
+                        ⚙️ 參數調整
+                    </h4>
+                    <div id="controlsContainer"></div>
+                </div>
+
+                <div id="codeDisplay" class="code-container" style="display: none;">
+                    <div class="code-block">
+                        <div class="code-header">
+                            <h4>HTML (結構)</h4>
+                            <div class="code-header-buttons">
+                                <button class="copy-btn" onclick="copyCode('htmlCode', this)">📋 複製下方語法</button>
+                            </div>
+                        </div>
+                        <pre id="htmlCode"
+                            style="min-height: 200px; white-space: pre-wrap; word-break: break-all;"></pre>
+                    </div>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <h4>CSS (樣式)</h4>
+                            <div class="code-header-buttons" id="cssHeaderButtons">
+                                <button class="copy-btn" onclick="copyCode('cssCode', this)">📋 複製下方語法</button>
+                            </div>
+                        </div>
+                        <pre id="cssCode"
+                            style="min-height: 200px; white-space: pre-wrap; word-break: break-all;"></pre>
+                    </div>
+                    <div class="code-block" id="jsCodeBlock" style="display: none;">
+                        <div class="code-header">
+                            <h4>JavaScript (互動)</h4>
+                            <div class="code-header-buttons">
+                                <button class="copy-btn" onclick="copyCode('jsCode', this)">📋 複製下方語法</button>
+                            </div>
+                        </div>
+                        <pre id="jsCode" style="min-height: 200px; white-space: pre-wrap; word-break: break-all;"></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const tutorials = {
+            playground: {
+                title: "🎨 自由設計",
+                examples: [
+                    {
+                        name: "✨ 開始你的設計",
+                        isPlayground: true,
+                        html: `<div class="welcome-box">
+    <h1>歡迎來到即時實驗室!</h1>
+    <p>在這裡你可以直接修改下方的程式碼,</p>
+    <p>上方的預覽區域會立刻更新。</p>
+    <div class="glow-button">動態按鈕</div>
+</div>`,
+                        css: `.welcome-box {
+    padding: 40px;
+    text-align: center;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    max-width: 500px;
+    margin: 40px auto;
+}
+h1 { color: #2c3e50; margin-bottom: 20px; }
+p { color: #7f8c8d; line-height: 1.8; }
+.glow-button {
+    margin-top: 30px;
+    padding: 15px 30px;
+    background: #3498db;
+    color: white;
+    border-radius: 50px;
+    display: inline-block;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+}
+.glow-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px rgba(52, 152, 219, 0.5);
+    background: #2980b9;
+}`
+                    }
+                ]
+            },
+            basic_v1: {
+                title: "📦 基礎元件 (v1)",
+                examples: [
+                    {
+                        name: "Button 按鈕",
+                        html: '<button id="demoBtn">點擊我</button>',
+                        cssVars: {
+                            '--btn-bg': '#3498db',
+                            '--btn-color': '#ffffff',
+                            '--btn-padding': '12px 24px',
+                            '--btn-border-radius': '5px',
+                            '--btn-font-size': '16px',
+                            '--btn-border-width': '0px',
+                            '--btn-border-color': '#2980b9'
+                        },
+                        css: `#demoBtn {
+    background-color: var(--btn-bg);
+    color: var(--btn-color);
+    padding: var(--btn-padding);
+    border-radius: var(--btn-border-radius);
+    font-size: var(--btn-font-size);
+    border: var(--btn-border-width) solid var(--btn-border-color);
+    cursor: pointer;
+    transition: all 0.3s;
+}
+#demoBtn:hover {
+    opacity: 0.8;
+    transform: translateY(-2px);
+}`,
+                        controlGroups: [{
+                            groupName: "⚙️ 參數調整",
+                            controls: [
+                                { variable: '--btn-bg', type: 'color', label: '背景顏色' },
+                                { variable: '--btn-color', type: 'color', label: '文字顏色' },
+                                { variable: '--btn-font-size', type: 'range', min: 12, max: 32, unit: 'px', label: '字體大小' },
+                                { variable: '--btn-border-radius', type: 'range', min: 0, max: 50, unit: 'px', label: '圓角' },
+                                { variable: '--btn-border-width', type: 'range', min: 0, max: 10, unit: 'px', label: '邊框寬度' },
+                                { variable: '--btn-border-color', type: 'color', label: '邊框顏色' }
+                            ]
+                        }]
+                    },
+                    {
+                        name: "Input 輸入框",
+                        html: '<input type="text" id="demoInput" placeholder="請輸入文字...">',
+                        cssVars: {
+                            '--input-width': '300px',
+                            '--input-padding': '10px 15px',
+                            '--input-border': '2px',
+                            '--input-border-color': '#ddd',
+                            '--input-border-radius': '5px',
+                            '--input-font-size': '14px',
+                            '--input-bg': '#ffffff',
+                            '--input-color': '#333'
+                        },
+                        css: `#demoInput {
+    width: var(--input-width);
+    padding: var(--input-padding);
+    border: var(--input-border) solid var(--input-border-color);
+    border-radius: var(--input-border-radius);
+    font-size: var(--input-font-size);
+    background: var(--input-bg);
+    color: var(--input-color);
+    transition: all 0.3s;
+}
+#demoInput:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}`,
+                        controlGroups: [{
+                            groupName: "⚙️ 參數調整",
+                            controls: [
+                                { variable: '--input-width', type: 'range', min: 100, max: 500, unit: 'px', label: '寬度' },
+                                { variable: '--input-padding', type: 'text', label: 'Padding' },
+                                { variable: '--input-border', type: 'range', min: 0, max: 10, unit: 'px', label: '邊框粗細' },
+                                { variable: '--input-border-color', type: 'color', label: '邊框顏色' },
+                                { variable: '--input-border-radius', type: 'range', min: 0, max: 30, unit: 'px', label: '圓角' },
+                                { variable: '--input-font-size', type: 'range', min: 12, max: 24, unit: 'px', label: '字體大小' },
+                                { variable: '--input-bg', type: 'color', label: '背景色' },
+                                { variable: '--input-color', type: 'color', label: '文字色' }
+                            ]
+                        }]
+                    },
+                    {
+                        name: "Card 卡片",
+                        html: `<div id="demoCard">
+    <h3>卡片標題</h3>
+    <p>這是卡片內容,可以放置任何資訊。</p>
+    <button style="margin-top: 10px; padding: 8px 16px; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer;">了解更多</button>
+</div>`,
+                        cssVars: {
+                            '--card-width': '300px',
+                            '--card-padding': '20px',
+                            '--card-bg': '#ffffff',
+                            '--card-border-radius': '10px',
+                            '--card-shadow': '0 4px 6px rgba(0,0,0,0.1)',
+                            '--card-border': '1px',
+                            '--card-border-color': '#e0e0e0'
+                        },
+                        css: `#demoCard {
+    width: var(--card-width);
+    padding: var(--card-padding);
+    background: var(--card-bg);
+    border-radius: var(--card-border-radius);
+    box-shadow: var(--card-shadow);
+    border: var(--card-border) solid var(--card-border-color);
+    transition: all 0.3s;
+}
+#demoCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+}
+#demoCard h3 { margin-bottom: 10px; color: #2c3e50; }
+#demoCard p { color: #666; line-height: 1.6; }`,
+                        controlGroups: [{
+                            groupName: "⚙️ 參數調整",
+                            controls: [
+                                { variable: '--card-width', type: 'range', min: 200, max: 500, unit: 'px', label: '寬度' },
+                                { variable: '--card-padding', type: 'range', min: 10, max: 50, unit: 'px', label: 'Padding' },
+                                { variable: '--card-bg', type: 'color', label: '背景色' },
+                                { variable: '--card-border-radius', type: 'range', min: 0, max: 30, unit: 'px', label: '圓角' },
+                                { variable: '--card-border', type: 'range', min: 0, max: 5, unit: 'px', label: '邊框粗細' },
+                                { variable: '--card-border-color', type: 'color', label: '邊框顏色' }
+                            ]
+                        }]
+                    },
+                    {
+                        name: "Flex Container",
+                        html: `<div id="flexDemo">
+    <div class="flex-item" style="background: #e74c3c;">項目 1</div>
+    <div class="flex-item" style="background: #3498db;">項目 2</div>
+    <div class="flex-item" style="background: #2ecc71;">項目 3</div>
+</div>`,
+                        cssVars: {
+                            '--flex-direction': 'row',
+                            '--flex-justify': 'flex-start',
+                            '--flex-align': 'stretch',
+                            '--flex-gap': '10px',
+                            '--flex-wrap': 'nowrap',
+                            '--item-width': '100px',
+                            '--item-height': '80px'
+                        },
+                        css: `#flexDemo {
+    display: flex;
+    flex-direction: var(--flex-direction);
+    justify-content: var(--flex-justify);
+    align-items: var(--flex-align);
+    gap: var(--flex-gap);
+    flex-wrap: var(--flex-wrap);
+    padding: 20px;
+    background: #f8f9fa;
+    border: 2px dashed #dee2e6;
+    border-radius: 8px;
+}
+.flex-item {
+    width: var(--item-width);
+    height: var(--item-height);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    border-radius: 5px;
+}`,
+                        controlGroups: [{
+                            groupName: "⚙️ 參數調整",
+                            controls: [
+                                { variable: '--flex-direction', type: 'select', options: ['row', 'row-reverse', 'column', 'column-reverse'], label: 'Direction' },
+                                { variable: '--flex-justify', type: 'select', options: ['flex-start', 'center', 'flex-end', 'space-between', 'space-around', 'space-evenly'], label: 'Justify Content' },
+                                { variable: '--flex-align', type: 'select', options: ['stretch', 'flex-start', 'center', 'flex-end', 'baseline'], label: 'Align Items' },
+                                { variable: '--flex-gap', type: 'range', min: 0, max: 50, unit: 'px', label: 'Gap' },
+                                { variable: '--flex-wrap', type: 'select', options: ['nowrap', 'wrap', 'wrap-reverse'], label: 'Wrap' },
+                                { variable: '--item-width', type: 'range', min: 50, max: 200, unit: 'px', label: '項目寬度' },
+                                { variable: '--item-height', type: 'range', min: 50, max: 200, unit: 'px', label: '項目高度' }
+                            ]
+                        }]
+                    },
+                    {
+                        name: "Grid Container",
+                        html: `<div id="gridDemo">
+    <div class="grid-item" style="background: #e74c3c;">1</div>
+    <div class="grid-item" style="background: #3498db;">2</div>
+    <div class="grid-item" style="background: #2ecc71;">3</div>
+    <div class="grid-item" style="background: #f39c12;">4</div>
+    <div class="grid-item" style="background: #9b59b6;">5</div>
+    <div class="grid-item" style="background: #1abc9c;">6</div>
+</div>`,
+                        cssVars: {
+                            '--grid-columns': '3',
+                            '--grid-rows': '2',
+                            '--grid-gap': '15px',
+                            '--grid-item-height': '80px'
+                        },
+                        css: `#gridDemo {
+    display: grid;
+    grid-template-columns: repeat(var(--grid-columns), 1fr);
+    grid-template-rows: repeat(var(--grid-rows), var(--grid-item-height));
+    gap: var(--grid-gap);
+    padding: 20px;
+    background: #f8f9fa;
+    border: 2px dashed #dee2e6;
+    border-radius: 8px;
+}
+.grid-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 24px;
+    border-radius: 5px;
+}`,
+                        controlGroups: [{
+                            groupName: "⚙️ 參數調整",
+                            controls: [
+                                { variable: '--grid-columns', type: 'range', min: 1, max: 6, unit: '', label: '欄數' },
+                                { variable: '--grid-rows', type: 'range', min: 1, max: 4, unit: '', label: '列數' },
+                                { variable: '--grid-gap', type: 'range', min: 0, max: 50, unit: 'px', label: 'Gap' },
+                                { variable: '--grid-item-height', type: 'range', min: 50, max: 150, unit: 'px', label: '項目高度' }
+                            ]
+                        }]
+                    },
+                    {
+                        name: "Heading 標題",
+                        html: '<h2 id="demoHeading">這是一個標題</h2>',
+                        cssVars: {
+                            '--heading-size': '32px',
+                            '--heading-weight': '700',
+                            '--heading-color': '#2c3e50',
+                            '--heading-align': 'left',
+                            '--heading-spacing': '0px',
+                            '--heading-transform': 'none'
+                        },
+                        css: `#demoHeading {
+    font-size: var(--heading-size);
+    font-weight: var(--heading-weight);
+    color: var(--heading-color);
+    text-align: var(--heading-align);
+    letter-spacing: var(--heading-spacing);
+    text-transform: var(--heading-transform);
+    margin: 0;
+}`,
+                        controlGroups: [{
+                            groupName: "⚙️ 參數調整",
+                            controls: [
+                                { variable: '--heading-size', type: 'range', min: 16, max: 72, unit: 'px', label: '字體大小' },
+                                { variable: '--heading-weight', type: 'select', options: ['300', '400', '500', '600', '700', '800', '900'], label: '字重' },
+                                { variable: '--heading-color', type: 'color', label: '顏色' },
+                                { variable: '--heading-align', type: 'select', options: ['left', 'center', 'right', 'justify'], label: '對齊' },
+                                { variable: '--heading-spacing', type: 'range', min: -2, max: 10, unit: 'px', label: '字距' },
+                                { variable: '--heading-transform', type: 'select', options: ['none', 'uppercase', 'lowercase', 'capitalize'], label: '轉換' }
+                            ]
+                        }]
+                    },
+                    {
+                        name: "Paragraph 段落",
+                        html: '<p id="demoPara">這是一段文字內容,用來展示段落的各種樣式設定。</p>',
+                        cssVars: {
+                            '--para-size': '16px',
+                            '--para-line-height': '1.6',
+                            '--para-color': '#333',
+                            '--para-align': 'left',
+                            '--para-spacing': '0px'
+                        },
+                        css: `#demoPara {
+    font-size: var(--para-size);
+    line-height: var(--para-line-height);
+    color: var(--para-color);
+    text-align: var(--para-align);
+    letter-spacing: var(--para-spacing);
+    margin: 0;
+}`,
+                        controlGroups: [{
+                            groupName: "⚙️ 參數調整",
+                            controls: [
+                                { variable: '--para-size', type: 'range', min: 12, max: 24, unit: 'px', label: '字體大小' },
+                                { variable: '--para-line-height', type: 'range', min: 1, max: 3, step: 0.1, unit: '', label: '行高' },
+                                { variable: '--para-color', type: 'color', label: '顏色' },
+                                { variable: '--para-align', type: 'select', options: ['left', 'center', 'right', 'justify'], label: '對齊' },
+                                { variable: '--para-spacing', type: 'range', min: -1, max: 5, unit: 'px', label: '字距' }
+                            ]
+                        }]
+                    },
+                    {
+                        name: "Image 圖片",
+                        html: '<div id="demoImage" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold;">示範圖片</div>',
+                        cssVars: {
+                            '--img-width': '300px',
+                            '--img-height': '200px',
+                            '--img-border-radius': '8px',
+                            '--img-border': '0px',
+                            '--img-border-color': '#ddd',
+                            '--img-object-fit': 'cover'
+                        },
+                        css: `#demoImage {
+    width: var(--img-width);
+    height: var(--img-height);
+    border-radius: var(--img-border-radius);
+    border: var(--img-border) solid var(--img-border-color);
+    object-fit: var(--img-object-fit);
+}`,
+                        controlGroups: [{
+                            groupName: "⚙️ 參數調整",
+                            controls: [
+                                { variable: '--img-width', type: 'range', min: 100, max: 600, unit: 'px', label: '寬度' },
+                                { variable: '--img-height', type: 'range', min: 100, max: 400, unit: 'px', label: '高度' },
+                                { variable: '--img-border-radius', type: 'range', min: 0, max: 50, unit: 'px', label: '圓角' },
+                                { variable: '--img-border', type: 'range', min: 0, max: 10, unit: 'px', label: '邊框粗細' },
+                                { variable: '--img-border-color', type: 'color', label: '邊框顏色' },
+                                { variable: '--img-object-fit', type: 'select', options: ['cover', 'contain', 'fill', 'none'], label: 'Object Fit' }
+                            ]
+                        }]
+                    },
+                    {
+                        name: "List 列表",
+                        html: `<ul id="demoList">
+    <li>列表項目 1</li>
+    <li>列表項目 2</li>
+    <li>列表項目 3</li>
+</ul>`,
+                        cssVars: {
+                            '--list-style': 'disc',
+                            '--list-padding': '20px',
+                            '--list-item-spacing': '8px',
+                            '--list-color': '#333',
+                            '--list-font-size': '16px'
+                        },
+                        css: `#demoList {
+    list-style-type: var(--list-style);
+    padding-left: var(--list-padding);
+    color: var(--list-color);
+    font-size: var(--list-font-size);
+    margin: 0;
+}
+#demoList li {
+    margin-bottom: var(--list-item-spacing);
+}`,
+                        controlGroups: [{
+                            groupName: "⚙️ 參數調整",
+                            controls: [
+                                { variable: '--list-style', type: 'select', options: ['disc', 'circle', 'square', 'decimal', 'none'], label: 'List Style' },
+                                { variable: '--list-padding', type: 'range', min: 0, max: 50, unit: 'px', label: 'Padding Left' },
+                                { variable: '--list-item-spacing', type: 'range', min: 0, max: 30, unit: 'px', label: '項目間距' },
+                                { variable: '--list-color', type: 'color', label: '顏色' },
+                                { variable: '--list-font-size', type: 'range', min: 12, max: 24, unit: 'px', label: '字體大小' }
+                            ]
+                        }]
+                    },
+                    {
+                        name: "Table 表格",
+                        html: `<table id="demoTable">
+    <thead>
+        <tr><th>姓名</th><th>年齡</th><th>城市</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>張三</td><td>25</td><td>台北</td></tr>
+        <tr><td>李四</td><td>30</td><td>台中</td></tr>
+    </tbody>
+</table>`,
+                        cssVars: {
+                            '--table-border': '1px',
+                            '--table-border-color': '#ddd',
+                            '--table-cell-padding': '12px',
+                            '--table-header-bg': '#f8f9fa',
+                            '--table-row-hover': '#f1f3f5'
+                        },
+                        css: `#demoTable {
+    border-collapse: collapse;
+    width: 100%;
+    border: var(--table-border) solid var(--table-border-color);
+}
+#demoTable th, #demoTable td {
+    border: var(--table-border) solid var(--table-border-color);
+    padding: var(--table-cell-padding);
+    text-align: left;
+}
+#demoTable th { background-color: var(--table-header-bg); font-weight: bold; }
+#demoTable tr:hover { background-color: var(--table-row-hover); }`,
+                        controlGroups: [{
+                            groupName: "⚙️ 參數調整",
+                            controls: [
+                                { variable: '--table-border', type: 'range', min: 0, max: 5, unit: 'px', label: '邊框粗細' },
+                                { variable: '--table-border-color', type: 'color', label: '邊框顏色' },
+                                { variable: '--table-cell-padding', type: 'range', min: 5, max: 30, unit: 'px', label: '儲存格 Padding' },
+                                { variable: '--table-header-bg', type: 'color', label: '表頭背景' },
+                                { variable: '--table-row-hover', type: 'color', label: 'Hover 背景' }
+                            ]
+                        }]
+                    },
+                    {
+                        name: "Navbar 導航欄",
+                        html: `<nav id="demoNav">
+    <div class="nav-brand">Logo</div>
+    <ul class="nav-menu">
+        <li><a href="#">首頁</a></li>
+        <li><a href="#">關於</a></li>
+        <li><a href="#">聯絡</a></li>
+    </ul>
+</nav>`,
+                        cssVars: {
+                            '--nav-bg': '#2c3e50',
+                            '--nav-color': '#ffffff',
+                            '--nav-padding': '15px 30px',
+                            '--nav-gap': '25px',
+                            '--nav-hover-color': '#3498db'
+                        },
+                        css: `#demoNav {
+    background: var(--nav-bg);
+    color: var(--nav-color);
+    padding: var(--nav-padding);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.nav-brand { font-size: 20px; font-weight: bold; }
+.nav-menu {
+    display: flex;
+    gap: var(--nav-gap);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.nav-menu a {
+    color: var(--nav-color);
+    text-decoration: none;
+    transition: color 0.3s;
+}
+.nav-menu a:hover { color: var(--nav-hover-color); }`,
+                        controlGroups: [{
+                            groupName: "⚙️ 參數調整",
+                            controls: [
+                                { variable: '--nav-bg', type: 'color', label: '背景色' },
+                                { variable: '--nav-color', type: 'color', label: '文字色' },
+                                { variable: '--nav-gap', type: 'range', min: 10, max: 50, unit: 'px', label: '選單間距' }
+                            ]
+                        }]
+                    }
+                ]
+            },
+            layouts_v1: {
+                title: "🎯 佈局模式 (v1)",
+                examples: [
+                    {
+                        name: "置中盒子",
+                        html: `<div class="center-container">
+    <div class="center-box">我在正中央!</div>
+</div>`,
+                        cssVars: { '--box-bg': '#3498db' },
+                        css: `.center-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 300px;
+    background: #f8f9fa;
+    border: 2px dashed #dee2e6;
+}
+.center-box {
+    padding: 20px 40px;
+    background: var(--box-bg);
+    color: white;
+    border-radius: 8px;
+    font-weight: bold;
+}`,
+                        controlGroups: [{
+                            groupName: "⚙️ 參數調整",
+                            controls: [{ variable: '--box-bg', type: 'color', label: '背景色' }]
+                        }]
+                    },
+                    {
+                        name: "兩欄式佈局",
+                        html: `<div class="two-column">
+    <aside class="sidebar-left">側邊欄</aside>
+    <main class="two-column-main">主要內容區域</main>
+</div>`,
+                        cssVars: { '--sidebar-width': '200px' },
+                        css: `.two-column {
+    display: flex;
+    gap: 20px;
+    height: 300px;
+}
+.sidebar-left {
+    width: var(--sidebar-width);
+    background: #e74c3c;
+    color: white;
+    padding: 20px;
+    border-radius: 8px;
+}
+.two-column-main {
+    flex: 1;
+    background: #3498db;
+    color: white;
+    padding: 20px;
+    border-radius: 8px;
+}`,
+                        controlGroups: [{
+                            groupName: "⚙️ 參數調整",
+                            controls: [{ variable: '--sidebar-width', type: 'range', min: 100, max: 400, unit: 'px', label: '側欄寬度' }]
+                        }]
+                    },
+                    {
+                        name: "聖杯佈局",
+                        html: `<div class="holy-grail">
+    <header class="hg-header">頁首</header>
+    <div class="hg-body">
+        <aside class="hg-left">左側欄</aside>
+        <main class="hg-main">主內容</main>
+        <aside class="hg-right">右側欄</aside>
+    </div>
+    <footer class="hg-footer">頁尾</footer>
+</div>`,
+                        cssVars: {},
+                        css: `.holy-grail { display: flex; flex-direction: column; height: 400px; }
+.hg-header, .hg-footer { background: #2c3e50; color: white; padding: 15px; text-align: center; }
+.hg-body { display: flex; flex: 1; gap: 10px; padding: 10px 0; }
+.hg-left, .hg-right { width: 100px; background: #e74c3c; color: white; padding: 15px; }
+.hg-main { flex: 1; background: #3498db; color: white; padding: 15px; }`
+                    },
+                    {
+                        name: "卡片網格",
+                        html: `<div class="card-grid">
+    <div class="grid-card">卡片 1</div>
+    <div class="grid-card">卡片 2</div>
+    <div class="grid-card">卡片 3</div>
+    <div class="grid-card">卡片 4</div>
+</div>`,
+                        cssVars: { '--grid-gap': '15px' },
+                        css: `.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: var(--grid-gap);
+    padding: 20px;
+    background: #f8f9fa;
+}
+.grid-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 30px;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: bold;
+}`,
+                        controlGroups: [{
+                            groupName: "⚙️ 參數調整",
+                            controls: [{ variable: '--grid-gap', type: 'range', min: 0, max: 50, unit: 'px', label: '間距' }]
+                        }]
+                    },
+                    {
+                        name: "固定頁尾",
+                        html: `<div class="sticky-footer-layout">
+    <header class="sf-header">頁首</header>
+    <main class="sf-main">主要內容</main>
+    <footer class="sf-footer">頁尾</footer>
+</div>`,
+                        cssVars: {},
+                        css: `.sticky-footer-layout { display: flex; flex-direction: column; min-height: 300px; }
+.sf-header { background: #2c3e50; color: white; padding: 20px; text-align: center; }
+.sf-main { flex: 1; background: #ecf0f1; padding: 20px; }
+.sf-footer { background: #34495e; color: white; padding: 15px; text-align: center; }`
+                    },
+                    {
+                        name: "響應式導航",
+                        html: `<nav class="responsive-nav">
+    <div class="nav-logo">品牌</div>
+    <ul class="nav-links">
+        <li><a href="#">首頁</a></li>
+        <li><a href="#">產品</a></li>
+        <li><a href="#">關於</a></li>
+        <li><a href="#">聯絡</a></li>
+    </ul>
+</nav>`,
+                        cssVars: {},
+                        css: `.responsive-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #3498db;
+    padding: 15px 30px;
+    flex-wrap: wrap;
+}
+.nav-logo { color: white; font-size: 20px; font-weight: bold; }
+.nav-links {
+    display: flex;
+    gap: 25px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.nav-links a { color: white; text-decoration: none; }
+@media (max-width: 600px) {
+    .responsive-nav { flex-direction: column; gap: 15px; }
+    .nav-links { flex-direction: column; text-align: center; }
+}`
+                    }
+                ]
+            },
+
+            laboratory: {
+                title: "🔬 實驗室",
+                examples: [
+                    {
+                        name: "盒子模型實驗室",
+                        html: `<div id="boxLab">Box Model Laboratory</div>`,
+                        cssVars: {
+                            '--box-width': '200px',
+                            '--box-height': '100px',
+                            '--box-padding-top': '20px',
+                            '--box-padding-right': '30px',
+                            '--box-padding-bottom': '20px',
+                            '--box-padding-left': '30px',
+                            '--box-margin-top': '10px',
+                            '--box-margin-right': '10px',
+                            '--box-margin-bottom': '10px',
+                            '--box-margin-left': '10px',
+                            '--box-border-width': '3px',
+                            '--box-border-color': '#2c3e50',
+                            '--box-bg': '#3498db',
+                            '--box-color': '#ffffff'
+                        },
+                        css: `#boxLab {
+    width: var(--box-width);
+    height: var(--box-height);
+    padding: var(--box-padding-top) var(--box-padding-right) var(--box-padding-bottom) var(--box-padding-left);
+    margin: var(--box-margin-top) var(--box-margin-right) var(--box-margin-bottom) var(--box-margin-left);
+    border: var(--box-border-width) solid var(--box-border-color);
+    background: var(--box-bg);
+    color: var(--box-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    border-radius: 8px;
+}`,
+                        controlGroups: [
+                            {
+                                groupName: "📏 尺寸",
+                                controls: [
+                                    { variable: '--box-width', type: 'range-with-unit', min: 50, max: 400, units: ['px', '%', 'vw'], defaultUnit: 'px', label: '寬度' },
+                                    { variable: '--box-height', type: 'range-with-unit', min: 50, max: 300, units: ['px', '%', 'vh'], defaultUnit: 'px', label: '高度' }
+                                ]
+                            },
+                            {
+                                groupName: "📦 內距 (Padding)",
+                                controls: [
+                                    { variable: '--box-padding-top', type: 'range', min: 0, max: 50, unit: 'px', label: 'Top' },
+                                    { variable: '--box-padding-right', type: 'range', min: 0, max: 50, unit: 'px', label: 'Right' },
+                                    { variable: '--box-padding-bottom', type: 'range', min: 0, max: 50, unit: 'px', label: 'Bottom' },
+                                    { variable: '--box-padding-left', type: 'range', min: 0, max: 50, unit: 'px', label: 'Left' }
+                                ]
+                            },
+                            {
+                                groupName: "📐 外距 (Margin)",
+                                controls: [
+                                    { variable: '--box-margin-top', type: 'range', min: 0, max: 50, unit: 'px', label: 'Top' },
+                                    { variable: '--box-margin-right', type: 'range', min: 0, max: 50, unit: 'px', label: 'Right' },
+                                    { variable: '--box-margin-bottom', type: 'range', min: 0, max: 50, unit: 'px', label: 'Bottom' },
+                                    { variable: '--box-margin-left', type: 'range', min: 0, max: 50, unit: 'px', label: 'Left' }
+                                ]
+                            },
+                            {
+                                groupName: "🎨 顏色",
+                                controls: [
+                                    { variable: '--box-bg', type: 'color', label: '背景色' },
+                                    { variable: '--box-color', type: 'color', label: '文字色' },
+                                    { variable: '--box-border-color', type: 'color', label: '邊框色' }
+                                ]
+                            },
+                            {
+                                groupName: "🔲 邊框",
+                                controls: [
+                                    { variable: '--box-border-width', type: 'range', min: 0, max: 20, unit: 'px', label: '寬度' }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        name: "陰影工作坊",
+                        html: `<div id="shadowBox">Shadow Workshop</div>`,
+                        cssVars: {
+                            '--shadow-x': '5px',
+                            '--shadow-y': '5px',
+                            '--shadow-blur': '15px',
+                            '--shadow-spread': '0px',
+                            '--shadow-color': 'rgba(0, 0, 0, 0.3)',
+                            '--box-bg': '#ffffff',
+                            '--box-width': '200px',
+                            '--box-height': '100px'
+                        },
+                        css: `#shadowBox {
+    width: var(--box-width);
+    height: var(--box-height);
+    background: var(--box-bg);
+    box-shadow: var(--shadow-x) var(--shadow-y) var(--shadow-blur) var(--shadow-spread) var(--shadow-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    border-radius: 8px;
+    margin: 30px;
+}`,
+                        controlGroups: [
+                            {
+                                groupName: "☁️ Box Shadow",
+                                controls: [
+                                    { variable: '--shadow-x', type: 'range', min: -50, max: 50, unit: 'px', label: 'X 偏移' },
+                                    { variable: '--shadow-y', type: 'range', min: -50, max: 50, unit: 'px', label: 'Y 偏移' },
+                                    { variable: '--shadow-blur', type: 'range', min: 0, max: 50, unit: 'px', label: '模糊半徑' },
+                                    { variable: '--shadow-spread', type: 'range', min: -20, max: 20, unit: 'px', label: '擴散半徑' },
+                                    { variable: '--shadow-color', type: 'color-alpha', label: '陰影顏色' }
+                                ]
+                            },
+                            {
+                                groupName: "🎨 盒子樣式",
+                                controls: [
+                                    { variable: '--box-bg', type: 'color', label: '背景色' },
+                                    { variable: '--box-width', type: 'range', min: 100, max: 400, unit: 'px', label: '寬度' },
+                                    { variable: '--box-height', type: 'range', min: 50, max: 300, unit: 'px', label: '高度' }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        name: "文字實驗室",
+                        html: `<div id="textLab">Typography Laboratory 文字排版實驗室</div>`,
+                        cssVars: {
+                            '--text-size': '24px',
+                            '--text-weight': '400',
+                            '--text-line-height': '1.5',
+                            '--text-letter-spacing': '0px',
+                            '--text-word-spacing': '0px',
+                            '--text-align': 'center',
+                            '--text-transform': 'none',
+                            '--text-decoration': 'none',
+                            '--text-color': '#2c3e50',
+                            '--text-shadow-x': '0px',
+                            '--text-shadow-y': '0px',
+                            '--text-shadow-blur': '0px',
+                            '--text-shadow-color': 'rgba(0, 0, 0, 0.3)'
+                        },
+                        css: `#textLab {
+    font-size: var(--text-size);
+    font-weight: var(--text-weight);
+    line-height: var(--text-line-height);
+    letter-spacing: var(--text-letter-spacing);
+    word-spacing: var(--text-word-spacing);
+    text-align: var(--text-align);
+    text-transform: var(--text-transform);
+    text-decoration: var(--text-decoration);
+    color: var(--text-color);
+    text-shadow: var(--text-shadow-x) var(--text-shadow-y) var(--text-shadow-blur) var(--text-shadow-color);
+    padding: 30px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}`,
+                        controlGroups: [
+                            {
+                                groupName: "📝 字體屬性",
+                                controls: [
+                                    { variable: '--text-size', type: 'range', min: 12, max: 72, unit: 'px', label: 'Font Size' },
+                                    { variable: '--text-weight', type: 'select', options: ['100', '200', '300', '400', '500', '600', '700', '800', '900'], label: 'Font Weight' },
+                                    { variable: '--text-line-height', type: 'range', min: 0.8, max: 3, step: 0.1, unit: '', label: 'Line Height' }
+                                ]
+                            },
+                            {
+                                groupName: "📐 間距",
+                                controls: [
+                                    { variable: '--text-letter-spacing', type: 'range', min: -5, max: 20, unit: 'px', label: 'Letter Spacing' },
+                                    { variable: '--text-word-spacing', type: 'range', min: -10, max: 30, unit: 'px', label: 'Word Spacing' }
+                                ]
+                            },
+                            {
+                                groupName: "🎯 對齊與裝飾",
+                                controls: [
+                                    { variable: '--text-align', type: 'select', options: ['left', 'center', 'right', 'justify'], label: 'Text Align' },
+                                    { variable: '--text-transform', type: 'select', options: ['none', 'uppercase', 'lowercase', 'capitalize'], label: 'Transform' },
+                                    { variable: '--text-decoration', type: 'select', options: ['none', 'underline', 'overline', 'line-through'], label: 'Decoration' }
+                                ]
+                            },
+                            {
+                                groupName: "🎨 顏色與陰影",
+                                controls: [
+                                    { variable: '--text-color', type: 'color', label: '文字顏色' },
+                                    { variable: '--text-shadow-x', type: 'range', min: -10, max: 10, unit: 'px', label: 'Shadow X' },
+                                    { variable: '--text-shadow-y', type: 'range', min: -10, max: 10, unit: 'px', label: 'Shadow Y' },
+                                    { variable: '--text-shadow-blur', type: 'range', min: 0, max: 20, unit: 'px', label: 'Shadow Blur' }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        name: "變形矩陣 (Transform)",
+                        html: `<div id="transformBox">Transform Matrix</div>`,
+                        cssVars: {
+                            '--rotate-x': '0deg',
+                            '--rotate-y': '0deg',
+                            '--rotate-z': '0deg',
+                            '--scale-x': '1',
+                            '--scale-y': '1',
+                            '--translate-x': '0px',
+                            '--translate-y': '0px',
+                            '--skew-x': '0deg',
+                            '--skew-y': '0deg',
+                            '--perspective': '800px'
+                        },
+                        css: `#transformBox {
+    width: 150px;
+    height: 150px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    border-radius: 12px;
+    margin: 100px auto;
+    perspective: var(--perspective);
+    transform: 
+        rotateX(var(--rotate-x)) 
+        rotateY(var(--rotate-y)) 
+        rotateZ(var(--rotate-z))
+        scaleX(var(--scale-x))
+        scaleY(var(--scale-y))
+        translateX(var(--translate-x))
+        translateY(var(--translate-y))
+        skewX(var(--skew-x))
+        skewY(var(--skew-y));
+    transition: transform 0.3s ease;
+}`,
+                        controlGroups: [
+                            {
+                                groupName: "🔄 旋轉 (Rotate)",
+                                controls: [
+                                    { variable: '--rotate-x', type: 'range', min: -180, max: 180, unit: 'deg', label: 'Rotate X' },
+                                    { variable: '--rotate-y', type: 'range', min: -180, max: 180, unit: 'deg', label: 'Rotate Y' },
+                                    { variable: '--rotate-z', type: 'range', min: -180, max: 180, unit: 'deg', label: 'Rotate Z' }
+                                ]
+                            },
+                            {
+                                groupName: "📏 縮放 (Scale)",
+                                controls: [
+                                    { variable: '--scale-x', type: 'range', min: 0.1, max: 3, step: 0.1, unit: '', label: 'Scale X' },
+                                    { variable: '--scale-y', type: 'range', min: 0.1, max: 3, step: 0.1, unit: '', label: 'Scale Y' }
+                                ]
+                            },
+                            {
+                                groupName: "↔️ 位移 (Translate)",
+                                controls: [
+                                    { variable: '--translate-x', type: 'range', min: -200, max: 200, unit: 'px', label: 'Translate X' },
+                                    { variable: '--translate-y', type: 'range', min: -200, max: 200, unit: 'px', label: 'Translate Y' }
+                                ]
+                            },
+                            {
+                                groupName: "📐 傾斜 (Skew)",
+                                controls: [
+                                    { variable: '--skew-x', type: 'range', min: -45, max: 45, unit: 'deg', label: 'Skew X' },
+                                    { variable: '--skew-y', type: 'range', min: -45, max: 45, unit: 'deg', label: 'Skew Y' }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        name: "Flexbox 終極實驗室",
+                        html: `<div id="flexContainer">
+    <div class="flex-item" style="background: #e74c3c;">1</div>
+    <div class="flex-item" style="background: #3498db;">2</div>
+    <div class="flex-item" style="background: #2ecc71;">3</div>
+    <div class="flex-item" style="background: #f39c12;">4</div>
+</div>`,
+                        cssVars: {
+                            '--flex-direction': 'row',
+                            '--flex-wrap': 'wrap',
+                            '--justify-content': 'flex-start',
+                            '--align-items': 'stretch',
+                            '--align-content': 'flex-start',
+                            '--gap': '10px',
+                            '--item1-grow': '0',
+                            '--item1-shrink': '1',
+                            '--item1-basis': 'auto',
+                            '--item1-order': '0',
+                            '--container-height': '300px'
+                        },
+                        css: `#flexContainer {
+    display: flex;
+    flex-direction: var(--flex-direction);
+    flex-wrap: var(--flex-wrap);
+    justify-content: var(--justify-content);
+    align-items: var(--align-items);
+    align-content: var(--align-content);
+    gap: var(--gap);
+    min-height: var(--container-height);
+    background: #ecf0f1;
+    padding: 15px;
+    border-radius: 8px;
+    border: 2px dashed #95a5a6;
+}
+.flex-item {
+    width: 80px;
+    height: 80px;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 24px;
+    border-radius: 8px;
+}
+.flex-item:nth-child(1) {
+    flex-grow: var(--item1-grow);
+    flex-shrink: var(--item1-shrink);
+    flex-basis: var(--item1-basis);
+    order: var(--item1-order);
+}`,
+                        controlGroups: [
+                            {
+                                groupName: "📦 容器屬性",
+                                controls: [
+                                    { variable: '--flex-direction', type: 'select', options: ['row', 'row-reverse', 'column', 'column-reverse'], label: 'Direction' },
+                                    { variable: '--flex-wrap', type: 'select', options: ['nowrap', 'wrap', 'wrap-reverse'], label: 'Wrap' },
+                                    { variable: '--justify-content', type: 'select', options: ['flex-start', 'center', 'flex-end', 'space-between', 'space-around', 'space-evenly'], label: 'Justify Content' },
+                                    { variable: '--align-items', type: 'select', options: ['stretch', 'flex-start', 'center', 'flex-end', 'baseline'], label: 'Align Items' },
+                                    { variable: '--align-content', type: 'select', options: ['flex-start', 'center', 'flex-end', 'space-between', 'space-around', 'stretch'], label: 'Align Content' },
+                                    { variable: '--gap', type: 'range', min: 0, max: 50, unit: 'px', label: 'Gap' }
+                                ]
+                            },
+                            {
+                                groupName: "🎯 子項目 1 屬性",
+                                controls: [
+                                    { variable: '--item1-grow', type: 'range', min: 0, max: 5, unit: '', label: 'Flex Grow' },
+                                    { variable: '--item1-shrink', type: 'range', min: 0, max: 5, unit: '', label: 'Flex Shrink' },
+                                    { variable: '--item1-order', type: 'range', min: -5, max: 5, unit: '', label: 'Order' }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        name: "玻璃擬態卡片",
+                        html: `<div id="glassCard">
+    <h3 style="margin-top: 0;">Glassmorphism</h3>
+    <p>玻璃擬態設計風格</p>
+</div>`,
+                        cssVars: {
+                            '--glass-bg-opacity': '0.15',
+                            '--glass-blur': '10px',
+                            '--glass-border-width': '1px',
+                            '--glass-border-opacity': '0.3',
+                            '--glass-radius': '16px',
+                            '--glass-shadow': '0 8px 32px rgba(0, 0, 0, 0.1)'
+                        },
+                        css: `#glassCard {
+    background: rgba(255, 255, 255, var(--glass-bg-opacity));
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: var(--glass-border-width) solid rgba(255, 255, 255, var(--glass-border-opacity));
+    border-radius: var(--glass-radius);
+    box-shadow: var(--glass-shadow);
+    padding: 30px;
+    max-width: 300px;
+    margin: 20px auto;
+    color: #2c3e50;
+}
+#glassCard::before {
+    content: '';
+    position: absolute;
+    top: -100px;
+    left: -100px;
+    width: 400px;
+    height: 400px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 50%;
+    z-index: -1;
+}
+.result-preview {
+    position: relative;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+}`,
+                        controlGroups: [
+                            {
+                                groupName: "🔮 玻璃效果",
+                                controls: [
+                                    { variable: '--glass-bg-opacity', type: 'range', min: 0, max: 1, step: 0.05, unit: '', label: '背景透明度' },
+                                    { variable: '--glass-blur', type: 'range', min: 0, max: 30, unit: 'px', label: '模糊強度' },
+                                    { variable: '--glass-border-opacity', type: 'range', min: 0, max: 1, step: 0.05, unit: '', label: '邊框透明度' },
+                                    { variable: '--glass-border-width', type: 'range', min: 0, max: 5, unit: 'px', label: '邊框寬度' },
+                                    { variable: '--glass-radius', type: 'range', min: 0, max: 50, unit: 'px', label: '圓角' }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        name: "Grid 網格設計師",
+                        html: `<div id="gridContainer">
+    <div class="grid-item" style="background: #e74c3c;">Header</div>
+    <div class="grid-item" style="background: #3498db;">Sidebar</div>
+    <div class="grid-item" style="background: #2ecc71;">Main</div>
+    <div class="grid-item" style="background: #f39c12;">Footer</div>
+</div>`,
+                        cssVars: {
+                            '--grid-columns': 'repeat(3, 1fr)',
+                            '--grid-rows': 'auto',
+                            '--grid-gap': '15px',
+                            '--grid-auto-flow': 'row',
+                            '--place-items': 'stretch',
+                            '--item1-column': '1 / -1',
+                            '--item1-row': 'auto',
+                            '--item4-column': '1 / -1'
+                        },
+                        css: `#gridContainer {
+    display: grid;
+    grid-template-columns: var(--grid-columns);
+    grid-template-rows: var(--grid-rows);
+    gap: var(--grid-gap);
+    grid-auto-flow: var(--grid-auto-flow);
+    place-items: var(--place-items);
+    min-height: 300px;
+    background: #ecf0f1;
+    padding: 15px;
+    border-radius: 8px;
+}
+.grid-item {
+    padding: 20px;
+    color: white;
+    font-weight: bold;
+    border-radius: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.grid-item:nth-child(1) {
+    grid-column: var(--item1-column);
+    grid-row: var(--item1-row);
+}
+.grid-item:nth-child(4) {
+    grid-column: var(--item4-column);
+}`,
+                        controlGroups: [
+                            {
+                                groupName: "🎛️ Grid 容器",
+                                controls: [
+                                    { variable: '--grid-columns', type: 'select', options: ['repeat(2, 1fr)', 'repeat(3, 1fr)', 'repeat(4, 1fr)', '1fr 2fr 1fr', '200px 1fr'], label: 'Columns' },
+                                    { variable: '--grid-rows', type: 'select', options: ['auto', 'repeat(2, 100px)', '50px 1fr 50px'], label: 'Rows' },
+                                    { variable: '--grid-gap', type: 'range', min: 0, max: 50, unit: 'px', label: 'Gap' },
+                                    { variable: '--grid-auto-flow', type: 'select', options: ['row', 'column', 'dense'], label: 'Auto Flow' },
+                                    { variable: '--place-items', type: 'select', options: ['stretch', 'start', 'center', 'end'], label: 'Place Items' }
+                                ]
+                            },
+                            {
+                                groupName: "📍 Header 位置",
+                                controls: [
+                                    { variable: '--item1-column', type: 'select', options: ['1 / -1', '1 / 2', '2 / 3', '1 / 3'], label: 'Grid Column' }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        name: "Grid 按鈕面板",
+                        html: `<div id="gridButtons">
+    <button class="grid-btn">1</button>
+    <button class="grid-btn">2</button>
+    <button class="grid-btn">3</button>
+    <button class="grid-btn">4</button>
+    <button class="grid-btn">5</button>
+    <button class="grid-btn">6</button>
+    <button class="grid-btn">7</button>
+    <button class="grid-btn">8</button>
+    <button class="grid-btn">9</button>
+    <button class="grid-btn">0</button>
+</div>`,
+                        cssVars: {
+                            '--btn-grid-columns': 'repeat(3, 1fr)',
+                            '--btn-grid-rows': 'repeat(4, 1fr)',
+                            '--btn-gap': '12px',
+                            '--btn-size': '80px',
+                            '--btn-bg': '#3498db',
+                            '--btn-hover-bg': '#2980b9',
+                            '--btn-text-color': '#ffffff',
+                            '--btn-border-radius': '8px',
+                            '--btn-font-size': '20px'
+                        },
+                        css: `#gridButtons {
+    display: grid;
+    grid-template-columns: var(--btn-grid-columns);
+    grid-template-rows: var(--btn-grid-rows);
+    gap: var(--btn-gap);
+    padding: 20px;
+    background: #ecf0f1;
+    border-radius: 12px;
+    width: fit-content;
+    margin: auto;
+}
+.grid-btn {
+    width: var(--btn-size);
+    height: var(--btn-size);
+    background: var(--btn-bg);
+    color: var(--btn-text-color);
+    border: none;
+    border-radius: var(--btn-border-radius);
+    font-size: var(--btn-font-size);
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+.grid-btn:hover {
+    background: var(--btn-hover-bg);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+.grid-btn:active {
+    transform: translateY(0);
+}
+.grid-btn:nth-child(10) {
+    grid-column: 2;
+}`,
+                        controlGroups: [
+                            {
+                                groupName: "🎛️ Grid 設定",
+                                controls: [
+                                    { variable: '--btn-grid-columns', type: 'select', options: ['repeat(2, 1fr)', 'repeat(3, 1fr)', 'repeat(4, 1fr)', 'repeat(5, 1fr)'], label: '欄數' },
+                                    { variable: '--btn-gap', type: 'range', min: 0, max: 30, unit: 'px', label: '間距' }
+                                ]
+                            },
+                            {
+                                groupName: "🎨 按鈕樣式",
+                                controls: [
+                                    { variable: '--btn-size', type: 'range', min: 50, max: 120, unit: 'px', label: '按鈕大小' },
+                                    { variable: '--btn-bg', type: 'color', label: '背景色' },
+                                    { variable: '--btn-border-radius', type: 'range', min: 0, max: 30, unit: 'px', label: '圓角' },
+                                    { variable: '--btn-font-size', type: 'range', min: 14, max: 32, unit: 'px', label: '字體大小' }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        name: "Grid 表單布局",
+                        html: `<div id="gridForm">
+    <label>姓名:</label>
+    <input type="text" placeholder="請輸入姓名">
+    
+    <label>電子郵件:</label>
+    <input type="email" placeholder="請輸入電子郵件">
+    
+    <label>電話:</label>
+    <input type="tel" placeholder="請輸入電話">
+    
+    <label>性別:</label>
+    <select>
+        <option>男</option>
+        <option>女</option>
+        <option>其他</option>
+    </select>
+    
+    <label>地址:</label>
+    <textarea placeholder="請輸入地址"></textarea>
+    
+    <label>備註:</label>
+    <textarea placeholder="請輸入備註"></textarea>
+</div>`,
+                        cssVars: {
+                            '--form-columns': '150px 1fr',
+                            '--form-gap-row': '20px',
+                            '--form-gap-col': '15px',
+                            '--label-align': 'right',
+                            '--input-padding': '10px',
+                            '--input-border': '#ddd',
+                            '--input-border-radius': '6px',
+                            '--input-focus-border': '#3498db'
+                        },
+                        css: `#gridForm {
+    display: grid;
+    grid-template-columns: var(--form-columns);
+    gap: var(--form-gap-row) var(--form-gap-col);
+    padding: 25px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    max-width: 600px;
+    margin: auto;
+}
+#gridForm label {
+    text-align: var(--label-align);
+    padding-top: 10px;
+    font-weight: 600;
+    color: #2c3e50;
+}
+#gridForm input,
+#gridForm select,
+#gridForm textarea {
+    padding: var(--input-padding);
+    border: 2px solid var(--input-border);
+    border-radius: var(--input-border-radius);
+    font-size: 14px;
+    font-family: inherit;
+    transition: border-color 0.3s;
+}
+#gridForm input:focus,
+#gridForm select:focus,
+#gridForm textarea:focus {
+    outline: none;
+    border-color: var(--input-focus-border);
+}
+#gridForm textarea {
+    resize: vertical;
+    min-height: 60px;
+}`,
+                        controlGroups: [
+                            {
+                                groupName: "📐 Grid 布局",
+                                controls: [
+                                    { variable: '--form-columns', type: 'select', options: ['100px 1fr', '150px 1fr', '200px 1fr', '1fr 2fr'], label: '欄寬比例' },
+                                    { variable: '--form-gap-row', type: 'range', min: 5, max: 40, unit: 'px', label: '列間距' },
+                                    { variable: '--form-gap-col', type: 'range', min: 5, max: 40, unit: 'px', label: '欄間距' },
+                                    { variable: '--label-align', type: 'select', options: ['left', 'center', 'right'], label: '標籤對齊' }
+                                ]
+                            },
+                            {
+                                groupName: "🎨 輸入框樣式",
+                                controls: [
+                                    { variable: '--input-padding', type: 'range', min: 5, max: 20, unit: 'px', label: '內距' },
+                                    { variable: '--input-border', type: 'color', label: '邊框色' },
+                                    { variable: '--input-border-radius', type: 'range', min: 0, max: 20, unit: 'px', label: '圓角' }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        name: "Grid 對話框",
+                        html: `<div style="position: relative; min-height: 400px;">
+    <label style="display: flex; align-items: center; gap: 8px; margin-bottom: 15px; font-size: 14px; color: #555;">
+        <input type="checkbox" id="draggableCheckbox" checked>
+        <span>允許拖拉對話框</span>
+    </label>
+    <div id="gridDialog">
+        <div class="dialog-header">
+            確認操作
+            <button class="dialog-close-btn" onclick="closeDialog()">✕</button>
+        </div>
+        <div class="dialog-content">
+            <p>您確定要執行此操作嗎？</p>
+            <p>此操作無法復原。</p>
+        </div>
+        <div class="dialog-footer">
+            <button class="btn-cancel">取消</button>
+            <button class="btn-confirm">確認</button>
+        </div>
+    </div>
+    <div style="margin-top: 20px; padding: 15px; background: #e8f5e9; border-radius: 6px; color: #2e7d32; font-size: 13px;">
+        💡 提示：勾選 checkbox 後可拖拉對話框標題列。點擊關閉按鈕後，按鍵盤數字「1」可重新顯示對話框。
+    </div>
+</div>`,
+                        cssVars: {
+                            '--dialog-width': '400px',
+                            '--dialog-rows': 'auto 1fr auto',
+                            '--dialog-gap': '0px',
+                            '--header-bg': '#3498db',
+                            '--header-height': '60px',
+                            '--content-padding': '25px',
+                            '--footer-height': '70px',
+                            '--footer-gap': '10px',
+                            '--dialog-radius': '12px',
+                            '--dialog-shadow': '0 10px 40px rgba(0,0,0,0.2)'
+                        },
+                        css: `#gridDialog {
+    display: grid;
+    grid-template-rows: var(--dialog-rows);
+    gap: var(--dialog-gap);
+    width: var(--dialog-width);
+    background: white;
+    border-radius: var(--dialog-radius);
+    box-shadow: var(--dialog-shadow);
+    margin: 30px auto;
+    overflow: hidden;
+    position: absolute;
+    top: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: opacity 0.3s, transform 0.3s;
+}
+#gridDialog.hidden {
+    opacity: 0;
+    transform: translateX(-50%) scale(0.9);
+    pointer-events: none;
+}
+#gridDialog.draggable .dialog-header {
+    cursor: move;
+    user-select: none;
+}
+.dialog-header {
+    background: var(--header-bg);
+    color: white;
+    height: var(--header-height);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 25px;
+    font-size: 18px;
+    font-weight: bold;
+    position: relative;
+}
+.dialog-close-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 1;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.dialog-close-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: rotate(90deg);
+}
+.dialog-content {
+    padding: var(--content-padding);
+    color: #555;
+    line-height: 1.6;
+}
+.dialog-content p {
+    margin: 10px 0;
+}
+.dialog-footer {
+    height: var(--footer-height);
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: var(--footer-gap);
+    padding: 0 25px;
+    background: #f8f9fa;
+    border-top: 1px solid #e0e0e0;
+}
+.dialog-footer button {
+    padding: 10px 25px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.btn-cancel {
+    background: #95a5a6;
+    color: white;
+}
+.btn-cancel:hover {
+    background: #7f8c8d;
+}
+.btn-confirm {
+    background: #3498db;
+    color: white;
+}
+.btn-confirm:hover {
+    background: #2980b9;
+}`,
+                        controlGroups: [
+                            {
+                                groupName: "📐 對話框結構",
+                                controls: [
+                                    { variable: '--dialog-width', type: 'range', min: 300, max: 600, unit: 'px', label: '寬度' },
+                                    { variable: '--dialog-rows', type: 'select', options: ['auto 1fr auto', '60px 1fr 70px', '80px 1fr 80px'], label: '列高度' },
+                                    { variable: '--dialog-gap', type: 'range', min: 0, max: 20, unit: 'px', label: '區塊間距' }
+                                ]
+                            },
+                            {
+                                groupName: "🎨 樣式設定",
+                                controls: [
+                                    { variable: '--header-bg', type: 'color', label: '標題背景' },
+                                    { variable: '--header-height', type: 'range', min: 40, max: 100, unit: 'px', label: '標題高度' },
+                                    { variable: '--content-padding', type: 'range', min: 15, max: 40, unit: 'px', label: '內容內距' },
+                                    { variable: '--dialog-radius', type: 'range', min: 0, max: 30, unit: 'px', label: '圓角' }
+                                ]
+                            }
+                        ],
+                        onLoad: function () {
+                            const dialog = document.getElementById('gridDialog');
+                            const checkbox = document.getElementById('draggableCheckbox');
+                            const header = dialog.querySelector('.dialog-header');
+                            let isDragging = false;
+                            let currentX, currentY, initialX, initialY;
+
+                            // Checkbox 控制拖拉功能
+                            checkbox.addEventListener('change', function () {
+                                if (this.checked) {
+                                    dialog.classList.add('draggable');
+                                } else {
+                                    dialog.classList.remove('draggable');
+                                }
+                            });
+
+                            // 初始化為可拖拉
+                            dialog.classList.add('draggable');
+
+                            // 拖拉功能
+                            header.addEventListener('mousedown', function (e) {
+                                if (!checkbox.checked) return;
+                                if (e.target.classList.contains('dialog-close-btn')) return;
+
+                                isDragging = true;
+                                initialX = e.clientX - dialog.offsetLeft;
+                                initialY = e.clientY - dialog.offsetTop;
+                                dialog.style.position = 'absolute';
+                                dialog.style.transform = 'none';
+                            });
+
+                            document.addEventListener('mousemove', function (e) {
+                                if (!isDragging) return;
+
+                                e.preventDefault();
+                                currentX = e.clientX - initialX;
+                                currentY = e.clientY - initialY;
+
+                                dialog.style.left = currentX + 'px';
+                                dialog.style.top = currentY + 'px';
+                            });
+
+                            document.addEventListener('mouseup', function () {
+                                isDragging = false;
+                            });
+
+                            // 鍵盤事件：按數字 1 顯示對話框
+                            document.addEventListener('keydown', function (e) {
+                                if (e.key === '1') {
+                                    dialog.classList.remove('hidden');
+                                }
+                            });
+                        }
+                    },
+                    {
+                        name: "Grid 儀表板",
+                        html: `<div id="gridDashboard">
+    <div class="stat-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+        <div class="stat-value">1,234</div>
+        <div class="stat-label">總訪客</div>
+    </div>
+    <div class="stat-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+        <div class="stat-value">567</div>
+        <div class="stat-label">新用戶</div>
+    </div>
+    <div class="stat-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+        <div class="stat-value">89%</div>
+        <div class="stat-label">完成率</div>
+    </div>
+    <div class="stat-card" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+        <div class="stat-value">$12.5K</div>
+        <div class="stat-label">總收益</div>
+    </div>
+    <div class="stat-card chart-card" style="background: white; grid-column: span 2;">
+        <div class="chart-title">每週趨勢</div>
+        <div class="chart-placeholder">📊 圖表區域</div>
+    </div>
+    <div class="stat-card chart-card" style="background: white; grid-column: span 2;">
+        <div class="chart-title">用戶分布</div>
+        <div class="chart-placeholder">📈 圖表區域</div>
+    </div>
+</div>`,
+                        cssVars: {
+                            '--dash-columns': 'repeat(auto-fit, minmax(200px, 1fr))',
+                            '--dash-gap': '20px',
+                            '--card-padding': '25px',
+                            '--card-radius': '12px',
+                            '--card-min-height': '120px'
+                        },
+                        css: `#gridDashboard {
+    display: grid;
+    grid-template-columns: var(--dash-columns);
+    gap: var(--dash-gap);
+    padding: 20px;
+    background: #f0f2f5;
+    border-radius: 12px;
+}
+.stat-card {
+    padding: var(--card-padding);
+    border-radius: var(--card-radius);
+    min-height: var(--card-min-height);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s;
+}
+.stat-card:hover {
+    transform: translateY(-5px);
+}
+.stat-value {
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+.stat-label {
+    font-size: 14px;
+    opacity: 0.9;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+.chart-card {
+    color: #2c3e50;
+    border: 1px solid #e0e0e0;
+}
+.chart-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #2c3e50;
+}
+.chart-placeholder {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    opacity: 0.3;
+}`,
+                        controlGroups: [
+                            {
+                                groupName: "📊 Grid 設定",
+                                controls: [
+                                    { variable: '--dash-columns', type: 'select', options: ['repeat(2, 1fr)', 'repeat(3, 1fr)', 'repeat(4, 1fr)', 'repeat(auto-fit, minmax(200px, 1fr))', 'repeat(auto-fill, minmax(180px, 1fr))'], label: '欄數設定' },
+                                    { variable: '--dash-gap', type: 'range', min: 10, max: 40, unit: 'px', label: '間距' }
+                                ]
+                            },
+                            {
+                                groupName: "🎨 卡片樣式",
+                                controls: [
+                                    { variable: '--card-padding', type: 'range', min: 15, max: 40, unit: 'px', label: '內距' },
+                                    { variable: '--card-radius', type: 'range', min: 0, max: 30, unit: 'px', label: '圓角' },
+                                    { variable: '--card-min-height', type: 'range', min: 80, max: 200, unit: 'px', label: '最小高度' }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        name: "Grid 完整頁面布局",
+                        html: `<div id="gridPageLayout">
+    <header class="page-header">Header</header>
+    <aside class="page-sidebar">Sidebar</aside>
+    <main class="page-main">Main Content</main>
+    <footer class="page-footer">Footer</footer>
+</div>`,
+                        cssVars: {
+                            '--page-template-areas': '"header header" "sidebar main" "footer footer"',
+                            '--page-template-columns': '200px 1fr',
+                            '--page-template-rows': '80px 1fr 60px',
+                            '--page-gap': '0px',
+                            '--header-bg': '#2c3e50',
+                            '--sidebar-bg': '#34495e',
+                            '--main-bg': '#ecf0f1',
+                            '--footer-bg': '#2c3e50',
+                            '--page-height': '500px'
+                        },
+                        css: `#gridPageLayout {
+    display: grid;
+    grid-template-areas: var(--page-template-areas);
+    grid-template-columns: var(--page-template-columns);
+    grid-template-rows: var(--page-template-rows);
+    gap: var(--page-gap);
+    height: var(--page-height);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+.page-header {
+    grid-area: header;
+    background: var(--header-bg);
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 0 30px;
+    font-size: 24px;
+    font-weight: bold;
+}
+.page-sidebar {
+    grid-area: sidebar;
+    background: var(--sidebar-bg);
+    color: white;
+    padding: 20px;
+    font-size: 16px;
+}
+.page-main {
+    grid-area: main;
+    background: var(--main-bg);
+    padding: 30px;
+    overflow-y: auto;
+}
+.page-footer {
+    grid-area: footer;
+    background: var(--footer-bg);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+}`,
+                        controlGroups: [
+                            {
+                                groupName: "🏗️ 布局結構",
+                                controls: [
+                                    { variable: '--page-template-areas', type: 'select', options: ['"header header" "sidebar main" "footer footer"', '"header header" "main main" "footer footer"', '"header header header" "sidebar main main" "footer footer footer"', '"sidebar header" "sidebar main" "sidebar footer"'], label: 'Grid Areas' },
+                                    { variable: '--page-template-columns', type: 'select', options: ['200px 1fr', '250px 1fr', '150px 1fr', '1fr 3fr', '1fr'], label: '欄寬度' },
+                                    { variable: '--page-template-rows', type: 'select', options: ['80px 1fr 60px', '60px 1fr 50px', '100px 1fr 80px', 'auto 1fr auto'], label: '列高度' }
+                                ]
+                            },
+                            {
+                                groupName: "🎨 區域顏色",
+                                controls: [
+                                    { variable: '--header-bg', type: 'color', label: 'Header 背景' },
+                                    { variable: '--sidebar-bg', type: 'color', label: 'Sidebar 背景' },
+                                    { variable: '--main-bg', type: 'color', label: 'Main 背景' },
+                                    { variable: '--footer-bg', type: 'color', label: 'Footer 背景' }
+                                ]
+                            },
+                            {
+                                groupName: "📐 尺寸",
+                                controls: [
+                                    { variable: '--page-gap', type: 'range', min: 0, max: 20, unit: 'px', label: '區塊間距' },
+                                    { variable: '--page-height', type: 'range', min: 400, max: 700, unit: 'px', label: '頁面高度' }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        name: "濾鏡組合工作坊",
+                        html: `<div id="filterBox">
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23667eea'/%3E%3Cstop offset='100%25' style='stop-color:%23764ba2'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='200' height='200' fill='url(%23g)'/%3E%3Ccircle cx='100' cy='100' r='50' fill='white' opacity='0.3'/%3E%3C/svg%3E" style="width: 200px; height: 200px; border-radius: 12px;">
+</div>`,
+                        cssVars: {
+                            '--filter-blur': '0px',
+                            '--filter-brightness': '100%',
+                            '--filter-contrast': '100%',
+                            '--filter-grayscale': '0%',
+                            '--filter-hue-rotate': '0deg',
+                            '--filter-saturate': '100%',
+                            '--filter-sepia': '0%',
+                            '--filter-invert': '0%'
+                        },
+                        css: `#filterBox img {
+    filter: 
+        blur(var(--filter-blur))
+        brightness(var(--filter-brightness))
+        contrast(var(--filter-contrast))
+        grayscale(var(--filter-grayscale))
+        hue-rotate(var(--filter-hue-rotate))
+        saturate(var(--filter-saturate))
+        sepia(var(--filter-sepia))
+        invert(var(--filter-invert));
+    transition: filter 0.3s ease;
+}`,
+                        controlGroups: [
+                            {
+                                groupName: "🎨 基礎濾鏡",
+                                controls: [
+                                    { variable: '--filter-blur', type: 'range', min: 0, max: 20, unit: 'px', label: 'Blur' },
+                                    { variable: '--filter-brightness', type: 'range', min: 0, max: 200, unit: '%', label: 'Brightness' },
+                                    { variable: '--filter-contrast', type: 'range', min: 0, max: 200, unit: '%', label: 'Contrast' },
+                                    { variable: '--filter-saturate', type: 'range', min: 0, max: 200, unit: '%', label: 'Saturate' }
+                                ]
+                            },
+                            {
+                                groupName: "🌈 色彩濾鏡",
+                                controls: [
+                                    { variable: '--filter-hue-rotate', type: 'range', min: 0, max: 360, unit: 'deg', label: 'Hue Rotate' },
+                                    { variable: '--filter-grayscale', type: 'range', min: 0, max: 100, unit: '%', label: 'Grayscale' },
+                                    { variable: '--filter-sepia', type: 'range', min: 0, max: 100, unit: '%', label: 'Sepia' },
+                                    { variable: '--filter-invert', type: 'range', min: 0, max: 100, unit: '%', label: 'Invert' }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        name: "新神經擬態按鈕",
+                        html: `<div id="neuContainer">
+    <button id="neuBtn">Neumorphism Button</button>
+</div>`,
+                        cssVars: {
+                            '--neu-bg': '#e0e5ec',
+                            '--neu-light-shadow': '#ffffff',
+                            '--neu-dark-shadow': '#a3b1c6',
+                            '--neu-distance': '10px',
+                            '--neu-blur': '20px',
+                            '--neu-intensity': '1',
+                            '--neu-radius': '12px',
+                            '--neu-padding': '20px 40px'
+                        },
+                        css: `#neuBtn {
+    background: var(--neu-bg);
+    border: none;
+    border-radius: var(--neu-radius);
+    padding: var(--neu-padding);
+    font-size: 16px;
+    font-weight: 600;
+    color: #5a6b7f;
+    cursor: pointer;
+    box-shadow: 
+        calc(var(--neu-distance) * var(--neu-intensity)) calc(var(--neu-distance) * var(--neu-intensity)) calc(var(--neu-blur) * var(--neu-intensity)) var(--neu-dark-shadow),
+        calc(var(--neu-distance) * var(--neu-intensity) * -1) calc(var(--neu-distance) * var(--neu-intensity) * -1) calc(var(--neu-blur) * var(--neu-intensity)) var(--neu-light-shadow);
+    transition: all 0.3s ease;
+}
+#neuBtn:active {
+    box-shadow: 
+        inset calc(var(--neu-distance) * 0.5) calc(var(--neu-distance) * 0.5) calc(var(--neu-blur) * 0.5) var(--neu-dark-shadow),
+        inset calc(var(--neu-distance) * -0.5) calc(var(--neu-distance) * -0.5) calc(var(--neu-blur) * 0.5) var(--neu-light-shadow);
+}`,
+                        controlGroups: [
+                            {
+                                groupName: "💡 光源控制",
+                                controls: [
+                                    { variable: '--neu-distance', type: 'range', min: 0, max: 30, unit: 'px', label: '陰影距離' },
+                                    { variable: '--neu-blur', type: 'range', min: 0, max: 50, unit: 'px', label: '模糊強度' },
+                                    { variable: '--neu-intensity', type: 'range', min: 0, max: 2, step: 0.1, unit: '', label: '強度' }
+                                ]
+                            },
+                            {
+                                groupName: "🎨 樣式",
+                                controls: [
+                                    { variable: '--neu-bg', type: 'color', label: '背景色' },
+                                    { variable: '--neu-radius', type: 'range', min: 0, max: 50, unit: 'px', label: '圓角' }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        name: "響應式導覽列",
+                        html: `<div id="rwdNav">
+    <div class="nav-brand">Logo</div>
+    <div class="nav-menu">
+        <a href="#">Home</a>
+        <a href="#">About</a>
+        <a href="#">Services</a>
+        <a href="#">Contact</a>
+    </div>
+    <div class="nav-toggle">☰</div>
+</div>`,
+                        cssVars: {
+                            '--nav-width': '100%',
+                            '--nav-bg': '#2c3e50',
+                            '--nav-height': '60px',
+                            '--nav-flex-direction': 'row',
+                            '--menu-display': 'flex',
+                            '--menu-flex-direction': 'row',
+                            '--toggle-display': 'none',
+                            '--nav-gap': '20px'
+                        },
+                        css: `#rwdNav {
+    width: var(--nav-width);
+    background: var(--nav-bg);
+    height: var(--nav-height);
+    display: flex;
+    flex-direction: var(--nav-flex-direction);
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    border-radius: 8px;
+    gap: var(--nav-gap);
+}
+.nav-brand {
+    color: white;
+    font-weight: bold;
+    font-size: 20px;
+}
+.nav-menu {
+    display: var(--menu-display);
+    flex-direction: var(--menu-flex-direction);
+    gap: 20px;
+}
+.nav-menu a {
+    color: white;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    transition: background 0.3s;
+}
+.nav-menu a:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+.nav-toggle {
+    display: var(--toggle-display);
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+}`,
+                        controlGroups: [
+                            {
+                                groupName: "📱 響應式模擬",
+                                controls: [
+                                    {
+                                        variable: '--nav-width',
+                                        type: 'range-with-unit',
+                                        min: 50,
+                                        max: 100,
+                                        units: ['%', 'px'],
+                                        unitRanges: {
+                                            '%': { min: 50, max: 100 },
+                                            'px': { min: 300, max: 800 }
+                                        },
+                                        defaultUnit: '%',
+                                        label: '導覽列寬度'
+                                    },
+                                    { variable: '--menu-display', type: 'select', options: ['flex', 'none'], label: '選單顯示' },
+                                    { variable: '--toggle-display', type: 'select', options: ['none', 'block'], label: '漢堡選單' },
+                                    { variable: '--nav-flex-direction', type: 'select', options: ['row', 'column'], label: '排列方向' },
+                                    { variable: '--menu-flex-direction', type: 'select', options: ['row', 'column'], label: '選單方向' }
+                                ]
+                            },
+                            {
+                                groupName: "🎨 樣式",
+                                controls: [
+                                    { variable: '--nav-bg', type: 'color', label: '背景色' },
+                                    { variable: '--nav-height', type: 'range', min: 40, max: 500, unit: 'px', label: '高度' }
+
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            modern_web_v2: {
+                title: "🚀 現代網頁 (v2)",
+                examples: [
+                    {
+                        name: "CSS Grid 深入解析",
+                        html: `<div class="grid-layout-demo">
+    <div class="header">Header</div>
+    <div class="sidebar">Sidebar</div>
+    <div class="main">
+        Main Content
+        <div class="nested-grid">
+            <div class="item">A</div>
+            <div class="item">B</div>
+            <div class="item">C</div>
+        </div>
+    </div>
+    <div class="footer">Footer</div>
+</div>`,
+                        cssVars: {
+                            '--grid-gap': '20px',
+                            '--sidebar-width': '250px',
+                            '--min-card-size': '150px'
+                        },
+                        css: `.grid-layout-demo {
+    display: grid;
+    grid-template-columns: var(--sidebar-width) 1fr;
+    grid-template-rows: 80px 1fr 60px;
+    grid-template-areas: 
+        "header header"
+        "sidebar main"
+        "footer footer";
+    gap: var(--grid-gap);
+    height: 500px;
+}
+.header { grid-area: header; background: #2c3e50; color: white; padding: 20px; }
+.sidebar { grid-area: sidebar; background: #34495e; color: white; padding: 20px; }
+.main { grid-area: main; background: #ecf0f1; padding: 20px; overflow: auto; }
+.footer { grid-area: footer; background: #95a5a6; color: white; padding: 20px; }
+
+.nested-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(var(--min-card-size), 1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
+.item {
+    background: #3498db;
+    color: white;
+    padding: 30px;
+    text-align: center;
+    border-radius: 8px;
+}
+
+@media (max-width: 600px) {
+    .grid-layout-demo {
+        grid-template-columns: 1fr;
+        grid-template-areas: 
+            "header"
+            "main"
+            "sidebar"
+            "footer";
+        grid-template-rows: auto;
+    }
+}`
+                    },
+                    {
+                        name: "Responsive 實戰 (Media Queries)",
+                        html: `<div class="responsive-card">
+    <div class="card-image">📷 圖片區域</div>
+    <div class="card-content">
+        <h3>響應式卡片</h3>
+        <p>這張卡片會隨著螢幕寬度改變佈局。在桌面版是左右排列，在手機版則會變成上下堆疊。</p>
+        <button>了解更多</button>
+    </div>
+</div>`,
+                        css: `.responsive-card {
+    display: flex;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    max-width: 800px;
+    margin: 20px auto;
+}
+.card-image {
+    flex: 1;
+    background: linear-gradient(45deg, #ff9a9e, #fad0c4);
+    min-height: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: white;
+}
+.card-content {
+    flex: 2;
+    padding: 30px;
+}
+h3 { margin-top: 0; color: #333; }
+p { color: #666; line-height: 1.6; }
+button {
+    padding: 10px 20px;
+    background: #ff6b6b;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+/* 關鍵：媒體查詢 Media Query */
+@media (max-width: 768px) {
+    .responsive-card {
+        flex-direction: column;
+    }
+    .card-image {
+        min-height: 200px;
+    }
+}`
+                    },
+                    {
+                        name: "SEO 與 無障礙 (Semantic HTML)",
+                        html: `<main role="main" aria-label="主要內容">
+    <article>
+        <header>
+            <h1>語意化 SEO 示範</h1>
+            <time datetime="2023-10-27">2023年10月27日</time>
+        </header>
+        
+        <section aria-labelledby="section1-title">
+            <h2 id="section1-title">為什麼 Semantic HTML 很重要?</h2>
+            <p>使用正確的標籤 (如 <code>&lt;nav&gt;</code>, <code>&lt;article&gt;</code>, <code>&lt;footer&gt;</code>) 可以讓螢幕閱讀器更好地理解網頁結構，同時提升 SEO 排名。</p>
+        </section>
+
+        <section class="access-demo">
+            <h3>無障礙按鈕示範</h3>
+            <!-- 錯誤示範: 只有 div -->
+            <div class="bad-button">差勁的按鈕 (Div)</div>
+            
+            <!-- 正確示範: 有 aria-label 和 role -->
+            <button class="good-button" aria-label="點擊以閱讀更多資訊">良好的按鈕</button>
+        </section>
+        
+        <footer>
+            <p>作者: HTML 大師</p>
+        </footer>
+    </article>
+</main>`,
+                        css: `main {
+    max-width: 800px;
+    margin: auto;
+    font-family: system-ui, sans-serif;
+}
+article {
+    background: white;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+h1 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 15px; }
+h2 { color: #e67e22; }
+code { background: #f8f9fa; padding: 2px 5px; border-radius: 4px; color: #c0392b; }
+
+.access-demo {
+    margin-top: 30px;
+    padding: 20px;
+    background: #f0f2f5;
+    border-radius: 8px;
+}
+.bad-button, .good-button {
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 10px;
+    cursor: pointer;
+}
+.bad-button { background: #95a5a6; color: white; }
+.good-button { background: #27ae60; color: white; border: none; border-radius: 4px; }`
+                    }
+                ]
+            }
+        };
+
+        // Core Logic
+        const categoryContainer = document.getElementById('categoryButtons');
+        const exampleList = document.getElementById('exampleList');
+        const resultPreview = document.getElementById('resultPreview');
+        const controlsContainer = document.getElementById('controlsContainer');
+        const controlPanel = document.getElementById('controlPanel');
+        const codeDisplay = document.getElementById('codeDisplay');
+        const htmlCodePre = document.getElementById('htmlCode');
+        const cssCodePre = document.getElementById('cssCode');
+        let currentStyleElement = null;
+        let currentExample = null;
+        let lastChangedVariable = null; // Track the last changed CSS variable
+
+        // Playground state persistence
+        let playgroundState = {
+            html: null,
+            css: null,
+            htmlPos: { top: '100px', left: '50px' },
+            cssPos: { top: '100px', right: '50px' },
+            htmlCollapsed: false,
+            cssCollapsed: false
+        };
+
+        // Load persisted state from localStorage if available
+        const savedState = localStorage.getItem('hc_playground_session_state');
+        if (savedState) {
+            try {
+                const parsed = JSON.parse(savedState);
+                playgroundState = { ...playgroundState, ...parsed };
+            } catch (e) { console.error("Could not parse saved state"); }
+        }
+
+        function saveSessionState() {
+            localStorage.setItem('hc_playground_session_state', JSON.stringify(playgroundState));
+        }
+
+        function init() {
+            renderCategories();
+            selectCategory('playground');
+        }
+
+        function renderCategories() {
+            categoryContainer.innerHTML = '';
+            Object.keys(tutorials).forEach(key => {
+                const btn = document.createElement('button');
+                btn.className = 'category-btn';
+                btn.textContent = tutorials[key].title;
+                btn.onclick = () => {
+                    document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    selectCategory(key);
+                };
+                categoryContainer.appendChild(btn);
+            });
+            if (categoryContainer.firstChild) categoryContainer.firstChild.classList.add('active');
+        }
+
+        function selectCategory(catKey) {
+            // Remove floating editors if switching AWAY from playground
+            if (catKey !== 'playground') {
+                document.querySelectorAll('.floating-editor').forEach(el => el.remove());
+            }
+
+            exampleList.innerHTML = '';
+            tutorials[catKey].examples.forEach((ex, index) => {
+                const btn = document.createElement('button');
+                btn.textContent = ex.name;
+                btn.onclick = () => loadExample(catKey, index, btn);
+                exampleList.appendChild(btn);
+            });
+
+            // Special handling for layout when playground is selected
+            if (catKey === 'playground') {
+                document.querySelector('.main-content').classList.add('playground-mode');
+                document.getElementById('previewTitle').style.display = 'none';
+                document.querySelector('.category-nav').style.marginBottom = '5px';
+                document.querySelector('.container').style.paddingTop = '10px';
+                document.querySelector('.container').style.paddingBottom = '10px';
+            } else {
+                document.querySelector('.main-content').classList.remove('playground-mode');
+                document.getElementById('previewTitle').style.display = 'block';
+                document.querySelector('.category-nav').style.marginBottom = '';
+                document.querySelector('.container').style.paddingTop = '';
+                document.querySelector('.container').style.paddingBottom = '';
+            }
+
+            controlPanel.style.display = 'none';
+            codeDisplay.style.display = 'none';
+            resultPreview.innerHTML = '<div style="color: #777; text-align: center; padding-top: 60px;">請點選左側範例</div>';
+            if (exampleList.firstChild) loadExample(catKey, 0, exampleList.firstChild);
+        }
+
+        function loadExample(catKey, index, btnElement) {
+            document.querySelectorAll('.example-list button').forEach(b => b.classList.remove('active'));
+            btnElement.classList.add('active');
+
+            currentExample = tutorials[catKey].examples[index];
+
+            if (currentExample.isPlayground) {
+                renderPlayground(currentExample);
+                return;
+            }
+
+            // Restore normal view if previously in playground
+            resultPreview.style.display = 'block';
+            codeDisplay.style.display = 'flex';
+
+            // Set HTML
+            resultPreview.innerHTML = currentExample.html;
+
+            // Apply CSS Variables to preview container
+            if (currentExample.cssVars) {
+                Object.keys(currentExample.cssVars).forEach(varName => {
+                    resultPreview.style.setProperty(varName, currentExample.cssVars[varName]);
+                });
+            }
+
+            // Apply CSS
+            if (currentStyleElement) currentStyleElement.remove();
+            currentStyleElement = document.createElement('style');
+            currentStyleElement.textContent = currentExample.css;
+            document.head.appendChild(currentStyleElement);
+
+            // Display code
+            lastChangedVariable = null; // Reset highlight when loading new example
+            htmlCodePre.innerHTML = highlightHTML(currentExample.html);
+            cssCodePre.innerHTML = highlightCSS(generateCSSCode());
+
+            // Handle JavaScript button and code display
+            const cssHeaderButtons = document.getElementById('cssHeaderButtons');
+            const jsCodeBlock = document.getElementById('jsCodeBlock');
+            const jsCodePre = document.getElementById('jsCode');
+
+            // Remove existing JS button if any
+            const existingJsBtn = cssHeaderButtons.querySelector('.js-btn');
+            if (existingJsBtn) existingJsBtn.remove();
+
+            // Add JS button if example has onLoad function
+            if (currentExample.onLoad && typeof currentExample.onLoad === 'function') {
+                const jsBtn = document.createElement('button');
+                jsBtn.className = 'js-btn';
+                jsBtn.textContent = '📜 顯示 JavaScript';
+                jsBtn.onclick = function () {
+                    if (jsCodeBlock.style.display === 'none') {
+                        jsCodeBlock.style.display = 'block';
+                        jsBtn.textContent = '📜 隱藏 JavaScript';
+                        jsBtn.classList.add('active');
+                        jsCodePre.textContent = currentExample.onLoad.toString();
+                    } else {
+                        jsCodeBlock.style.display = 'none';
+                        jsBtn.textContent = '📜 顯示 JavaScript';
+                        jsBtn.classList.remove('active');
+                    }
+                };
+                cssHeaderButtons.appendChild(jsBtn);
+                jsCodeBlock.style.display = 'none'; // Initially hidden
+            } else {
+                jsCodeBlock.style.display = 'none';
+            }
+
+            codeDisplay.style.display = 'flex';
+
+            // Render controls
+            renderControls(currentExample);
+            controlPanel.style.display = currentExample.controlGroups && currentExample.controlGroups.length ? 'block' : 'none';
+
+            // Execute onLoad callback if exists
+            if (currentExample.onLoad && typeof currentExample.onLoad === 'function') {
+                setTimeout(() => {
+                    currentExample.onLoad();
+                }, 100);
+            }
+        }
+
+        function renderControls(example) {
+            controlsContainer.innerHTML = '';
+
+            if (!example.controlGroups) return;
+
+            example.controlGroups.forEach(group => {
+                const groupDiv = document.createElement('div');
+                groupDiv.className = 'control-group';
+
+                const header = document.createElement('div');
+                header.className = 'control-group-header';
+                header.textContent = group.groupName;
+                header.onclick = () => {
+                    header.classList.toggle('collapsed');
+                    gridDiv.classList.toggle('collapsed');
+                };
+                groupDiv.appendChild(header);
+
+                const gridDiv = document.createElement('div');
+                gridDiv.className = 'control-grid';
+
+                group.controls.forEach(ctrl => {
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'control-item';
+
+                    const label = document.createElement('label');
+                    label.innerHTML = `<span>${ctrl.label}</span> <span style="color: #3498db;"></span>`;
+                    wrapper.appendChild(label);
+
+                    let input;
+
+                    if (ctrl.type === 'range' || ctrl.type === 'range-with-unit') {
+                        input = document.createElement('input');
+                        input.type = 'range';
+                        input.min = ctrl.min;
+                        input.max = ctrl.max;
+                        if (ctrl.step) input.step = ctrl.step;
+
+                        const currentVal = example.cssVars[ctrl.variable];
+                        const parsedVal = parseFloat(currentVal);
+                        input.value = !isNaN(parsedVal) ? parsedVal : (ctrl.min + ctrl.max) / 2;
+
+                        label.querySelector('span:last-child').textContent = input.value + (ctrl.unit || '');
+
+                        input.oninput = (e) => {
+                            const val = e.target.value + (ctrl.unit || '');
+                            label.querySelector('span:last-child').textContent = val;
+                            updateCSSVariable(ctrl.variable, val);
+                        };
+
+                        // Unit selector for range-with-unit
+                        if (ctrl.type === 'range-with-unit' && ctrl.units) {
+                            const unitSelector = document.createElement('div');
+                            unitSelector.className = 'unit-selector';
+
+                            // Store current unit in ctrl object
+                            if (!ctrl.currentUnit) {
+                                ctrl.currentUnit = ctrl.defaultUnit || ctrl.units[0];
+                            }
+
+                            ctrl.units.forEach(unit => {
+                                const unitBtn = document.createElement('button');
+                                unitBtn.className = 'unit-btn';
+                                unitBtn.textContent = unit;
+                                if (unit === ctrl.currentUnit) unitBtn.classList.add('active');
+
+                                unitBtn.onclick = () => {
+                                    unitSelector.querySelectorAll('.unit-btn').forEach(b => b.classList.remove('active'));
+                                    unitBtn.classList.add('active');
+                                    ctrl.currentUnit = unit;
+                                    ctrl.unit = unit;
+
+                                    // Update range min/max if unitRanges is defined
+                                    if (ctrl.unitRanges && ctrl.unitRanges[unit]) {
+                                        input.min = ctrl.unitRanges[unit].min;
+                                        input.max = ctrl.unitRanges[unit].max;
+
+                                        // Reset value to middle of new range if current value is out of bounds
+                                        const currentValue = parseFloat(input.value);
+                                        if (currentValue < input.min || currentValue > input.max) {
+                                            input.value = (parseFloat(input.min) + parseFloat(input.max)) / 2;
+                                        }
+                                    }
+
+                                    const val = input.value + unit;
+                                    label.querySelector('span:last-child').textContent = val;
+                                    updateCSSVariable(ctrl.variable, val);
+                                };
+
+                                unitSelector.appendChild(unitBtn);
+                            });
+
+                            wrapper.appendChild(unitSelector);
+                        }
+                    } else if (ctrl.type === 'color' || ctrl.type === 'color-alpha') {
+                        input = document.createElement('input');
+                        input.type = 'color';
+
+                        const currentVal = example.cssVars[ctrl.variable];
+                        input.value = rgbaToHex(currentVal) || '#000000';
+
+                        input.oninput = (e) => {
+                            updateCSSVariable(ctrl.variable, e.target.value);
+                        };
+                    } else if (ctrl.type === 'select') {
+                        input = document.createElement('select');
+                        const currentVal = example.cssVars[ctrl.variable];
+
+                        ctrl.options.forEach(opt => {
+                            const option = document.createElement('option');
+                            option.value = opt;
+                            option.textContent = opt;
+                            if (currentVal === opt) option.selected = true;
+                            input.appendChild(option);
+                        });
+
+                        input.onchange = (e) => {
+                            updateCSSVariable(ctrl.variable, e.target.value);
+                        };
+                    }
+
+                    if (input) wrapper.appendChild(input);
+                    gridDiv.appendChild(wrapper);
+                });
+
+                groupDiv.appendChild(gridDiv);
+                controlsContainer.appendChild(groupDiv);
+            });
+        }
+
+        function updateCSSVariable(variable, value) {
+            resultPreview.style.setProperty(variable, value);
+            currentExample.cssVars[variable] = value;
+            lastChangedVariable = variable; // Track the last changed variable
+
+            // Re-render highlighted code
+            cssCodePre.innerHTML = highlightCSS(generateCSSCode(false));
+            htmlCodePre.innerHTML = highlightHTML(currentExample.html);
+        }
+
+        function generateCSSCode(isRaw = false) {
+            let css = currentExample.css;
+
+            // Replace CSS variables with actual values for display
+            if (currentExample.cssVars) {
+                Object.keys(currentExample.cssVars).forEach(varName => {
+                    const value = currentExample.cssVars[varName];
+                    const regex = new RegExp(`var\\(${varName}\\)`, 'g');
+
+                    if (!isRaw && varName === lastChangedVariable) {
+                        // Mark for highlight, we'll process this after syntax highlighting to avoid conflicts
+                        css = css.replace(regex, `__HL_START__${value}__HL_END__`);
+                    } else {
+                        css = css.replace(regex, value);
+                    }
+                });
+            }
+
+            return css;
+        }
+
+        function highlightLastChangedVariable(html, variable, value) {
+            // Escape HTML for safe display
+            let escapedHtml = escapeHtml(html);
+
+            // Don't highlight in HTML if no variable was changed
+            if (!variable) return escapedHtml;
+
+            // Try to find and highlight the value in HTML attributes or content
+            // This is a simple implementation that highlights the exact value
+            const escapedValue = escapeHtml(value);
+            const valueRegex = new RegExp(`(${escapedValue.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'g');
+
+            return escapedHtml;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function rgbaToHex(color) {
+            if (color.startsWith('#')) return color;
+            const ctx = document.createElement('canvas').getContext('2d');
+            ctx.fillStyle = color;
+            return ctx.fillStyle;
+        }
+
+        function copyCode(type, button) {
+            let codeText = '';
+
+            // Source from data directly to avoid syntax highlighting tags
+            if (type === 'htmlCode') {
+                codeText = currentExample.html;
+            } else if (type === 'cssCode') {
+                codeText = generateCSSCode(true); // Use raw mode
+            } else if (type === 'jsCode') {
+                codeText = currentExample.onLoad ? currentExample.onLoad.toString() : '';
+            } else {
+                // Fallback to textContent if ID is passed
+                const codeElement = document.getElementById(type);
+                if (codeElement) codeText = codeElement.textContent;
+            }
+
+            // Using Clipboard API
+            navigator.clipboard.writeText(codeText).then(() => {
+                // 視覺反饋：按鈕變綠並顯示「已複製」
+                const originalText = button.textContent;
+                button.textContent = '✓ 已複製！';
+                button.classList.add('copied');
+
+                // 2秒後恢復原狀
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            }).catch(err => {
+                // 如果 Clipboard API 失敗，使用舊方法
+                const textArea = document.createElement('textarea');
+                textArea.value = codeText;
+                textArea.style.position = 'fixed';
+                textArea.style.left = '-9999px';
+                document.body.appendChild(textArea);
+                textArea.select();
+
+                try {
+                    document.execCommand('copy');
+                    const originalText = button.textContent;
+                    button.textContent = '✓ 已複製！';
+                    button.classList.add('copied');
+
+                    setTimeout(() => {
+                        button.textContent = originalText;
+                        button.classList.remove('copied');
+                    }, 2000);
+                } catch (err) {
+                    alert('複製失敗，請手動複製');
+                }
+
+                document.body.removeChild(textArea);
+            });
+        }
+
+        function setTheme(themeClass) {
+            document.body.className = themeClass;
+        }
+
+        function closeDialog() {
+            const dialog = document.getElementById('gridDialog');
+            if (dialog) {
+                dialog.classList.add('hidden');
+            }
+        }
+
+        function renderPlayground(example) {
+            // Remove existing any dangling editors
+            document.querySelectorAll('.floating-editor').forEach(el => el.remove());
+
+            // CRITICAL CLEANUP: Clear tutorial styles and settings
+            if (currentStyleElement) currentStyleElement.remove();
+            resultPreview.style.cssText = '';
+            resultPreview.innerHTML = '';
+            resultPreview.style.zIndex = '1';
+            codeDisplay.style.display = 'none';
+            controlPanel.style.display = 'none';
+
+            const container = document.createElement('div');
+            container.className = 'live-editor-container';
+
+            const previewWrapper = document.createElement('div');
+            previewWrapper.className = 'live-editor-preview';
+            previewWrapper.id = 'livePreview';
+            previewWrapper.innerHTML = `
+                <div id="playgroundContent"></div>
+            `;
+
+            // Use persisted state if available
+            const initialHtml = playgroundState.html !== null ? playgroundState.html : example.html;
+            const initialCss = playgroundState.css !== null ? playgroundState.css : example.css;
+
+            const htmlBox = createFloatingEditor('HTML 結構', initialHtml, 'html', playgroundState.htmlPos, playgroundState.htmlCollapsed);
+            const cssBox = createFloatingEditor('CSS 樣式', initialCss, 'css', playgroundState.cssPos, playgroundState.cssCollapsed);
+
+            // Append to BODY to be on top of EVERYTHING
+            document.body.appendChild(htmlBox);
+            document.body.appendChild(cssBox);
+
+            const pgControls = document.createElement('div');
+            pgControls.className = 'playground-controls';
+            pgControls.style.position = 'absolute';
+            pgControls.style.top = '10px';
+            pgControls.style.left = '50%';
+            pgControls.style.transform = 'translateX(-50%)';
+            pgControls.style.zIndex = '102';
+            pgControls.innerHTML = `
+                <button class="pg-btn pg-btn-init" onclick="initPlayground()">🔄 初始化</button>
+                <button class="pg-btn pg-btn-save" onclick="savePlayground()">💾 儲存</button>
+                <button class="pg-btn pg-btn-load" onclick="loadPlayground()">📂 讀取</button>
+            `;
+            previewWrapper.appendChild(pgControls);
+
+            container.appendChild(previewWrapper);
+            // htmlBox and cssBox are moved to body
+
+            resultPreview.appendChild(container);
+
+            // Initial Update
+            updatePlayground();
+
+            // Make them draggable
+            makeDraggable(htmlBox);
+            makeDraggable(cssBox);
+        }
+
+        function createFloatingEditor(title, initialValue, type, pos, isCollapsed) {
+            const box = document.createElement('div');
+            box.className = `floating-editor`;
+            box.id = `editor-box-${type}`;
+
+            if (pos) {
+                box.style.top = pos.top;
+                box.style.left = pos.left;
+                if (pos.right) box.style.right = pos.right;
+            }
+
+            if (isCollapsed) box.classList.add('collapsed');
+
+            const handle = document.createElement('div');
+            handle.className = 'drag-handle';
+            handle.innerHTML = `<span>✥ ${title}</span>`;
+
+            const controls = document.createElement('div');
+            controls.className = 'editor-controls';
+
+            const minBtn = document.createElement('button');
+            minBtn.className = 'minimize-btn';
+            minBtn.innerHTML = box.classList.contains('collapsed') ? '➕' : '➖';
+            minBtn.onclick = (e) => {
+                e.stopPropagation();
+                box.classList.toggle('collapsed');
+                minBtn.innerHTML = box.classList.contains('collapsed') ? '➕' : '➖';
+                if (type === 'html') playgroundState.htmlCollapsed = box.classList.contains('collapsed');
+                else playgroundState.cssCollapsed = box.classList.contains('collapsed');
+                saveSessionState();
+            };
+
+            controls.appendChild(minBtn);
+            handle.appendChild(controls);
+            box.appendChild(handle);
+
+            const wrapper = document.createElement('div');
+            wrapper.className = 'editor-wrapper';
+
+            const textarea = document.createElement('textarea');
+            textarea.className = 'editor-textarea';
+            textarea.id = `editor-${type}`;
+            textarea.value = initialValue;
+            textarea.spellcheck = false;
+            textarea.wrap = "soft"; // Standard wrap for easy editing
+
+            wrapper.appendChild(textarea);
+            box.appendChild(wrapper);
+
+            textarea.oninput = updatePlayground;
+
+            textarea.onkeydown = (e) => {
+                if (e.key === 'Tab') {
+                    e.preventDefault();
+                    const start = textarea.selectionStart;
+                    const end = textarea.selectionEnd;
+                    textarea.value = textarea.value.substring(0, start) + "    " + textarea.value.substring(end);
+                    textarea.selectionStart = textarea.selectionEnd = start + 4;
+                    updatePlayground();
+                }
+            };
+
+            box.onmousedown = () => {
+                document.querySelectorAll('.floating-editor').forEach(el => el.style.zIndex = '9000');
+                box.style.zIndex = '9001';
+            };
+
+            return box;
+        }
+
+        function makeDraggable(element) {
+            const handle = element.querySelector('.drag-handle');
+            let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+            handle.onmousedown = dragMouseDown;
+
+            function dragMouseDown(e) {
+                if (e.target.closest('.editor-controls')) return; // Don't drag if clicking buttons
+
+                e.preventDefault();
+                // Bring to front
+                document.querySelectorAll('.floating-editor').forEach(el => el.style.zIndex = '9000');
+                element.style.zIndex = '9001';
+
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                document.onmouseup = closeDragElement;
+                document.onmousemove = elementDrag;
+            }
+
+            function elementDrag(e) {
+                e.preventDefault();
+                pos1 = pos3 - e.clientX;
+                pos2 = pos4 - e.clientY;
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+
+                // Fixed position dragging
+                element.style.top = (element.offsetTop - pos2) + "px";
+                element.style.left = (element.offsetLeft - pos1) + "px";
+            }
+
+            function closeDragElement() {
+                document.onmouseup = null;
+                document.onmousemove = null;
+
+                // Save final position to state
+                const type = element.id.includes('html') ? 'html' : 'css';
+                const pos = {
+                    top: element.style.top,
+                    left: element.style.left
+                };
+
+                if (type === 'html') playgroundState.htmlPos = pos;
+                else playgroundState.cssPos = pos;
+
+                // Remove right property if we are moving using left/top
+                element.style.right = 'auto';
+
+                saveSessionState();
+            }
+        }
+
+        function makeDraggable(element) {
+            const handle = element.querySelector('.drag-handle');
+            let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+            handle.onmousedown = dragMouseDown;
+
+            function dragMouseDown(e) {
+                if (e.target.closest('.editor-controls')) return; // Don't drag if clicking buttons
+
+                e.preventDefault();
+                // Bring to front
+                document.querySelectorAll('.floating-editor').forEach(el => el.style.zIndex = '9000');
+                element.style.zIndex = '9001';
+
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                document.onmouseup = closeDragElement;
+                document.onmousemove = elementDrag;
+            }
+
+            function elementDrag(e) {
+                e.preventDefault();
+                pos1 = pos3 - e.clientX;
+                pos2 = pos4 - e.clientY;
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+
+                // Fixed position dragging
+                element.style.top = (element.offsetTop - pos2) + "px";
+                element.style.left = (element.offsetLeft - pos1) + "px";
+            }
+
+            function closeDragElement() {
+                document.onmouseup = null;
+                document.onmousemove = null;
+
+                // Save final position to state
+                const type = element.id.includes('html') ? 'html' : 'css';
+                const pos = {
+                    top: element.style.top,
+                    left: element.style.left
+                };
+
+                if (type === 'html') playgroundState.htmlPos = pos;
+                else playgroundState.cssPos = pos;
+
+                // Remove right property if we are moving using left/top
+                element.style.right = 'auto';
+
+                saveSessionState();
+            }
+        }
+
+        // Playground specific actions
+        window.initPlayground = function () {
+            if (confirm('確定要初始化嗎？目前的設計將會被覆蓋。')) {
+                const defaultExample = tutorials.playground.examples[0];
+                document.getElementById('editor-html').value = defaultExample.html;
+                document.getElementById('editor-css').value = defaultExample.css;
+
+                // Trigger updates
+                const htmlEv = new Event('input');
+                const cssEv = new Event('input');
+                document.getElementById('editor-html').dispatchEvent(htmlEv);
+                document.getElementById('editor-css').dispatchEvent(cssEv);
+
+                showToast('已初始化為預設範例');
+            }
+        };
+
+        window.savePlayground = function () {
+            const html = document.getElementById('editor-html').value;
+            const css = document.getElementById('editor-css').value;
+            localStorage.setItem('hc_playground_html', html);
+            localStorage.setItem('hc_playground_css', css);
+            showToast('設計已儲存至瀏覽器');
+        };
+
+        window.loadPlayground = function () {
+            const html = localStorage.getItem('hc_playground_html');
+            const css = localStorage.getItem('hc_playground_css');
+
+            if (html !== null && css !== null) {
+                document.getElementById('editor-html').value = html;
+                document.getElementById('editor-css').value = css;
+
+                // Trigger updates
+                const htmlEv = new Event('input');
+                const cssEv = new Event('input');
+                document.getElementById('editor-html').dispatchEvent(htmlEv);
+                document.getElementById('editor-css').dispatchEvent(cssEv);
+
+                showToast('已讀取儲存的設計');
+            } else {
+                showToast('找不到已儲存的內容', true);
+            }
+        };
+
+        function showToast(message, isError = false) {
+            let toast = document.getElementById('hc-toast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'hc-toast';
+                toast.style.cssText = `
+                    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+                    padding: 10px 20px; border-radius: 30px; color: white;
+                    font-size: 14px; font-weight: bold; z-index: 9999;
+                    transition: opacity 0.3s, bottom 0.3s; opacity: 0;
+                `;
+                document.body.appendChild(toast);
+            }
+            toast.textContent = message;
+            toast.style.backgroundColor = isError ? '#e74c3c' : '#2ecc71';
+            toast.style.opacity = '1';
+            toast.style.bottom = '40px';
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.bottom = '20px';
+            }, 3000);
+        }
+
+        function createEditorBox(title, initialValue, type) {
+            const box = document.createElement('div');
+            box.className = 'code-box';
+
+            const header = document.createElement('div');
+            header.className = 'code-box-header';
+            header.innerHTML = `<span>${title}</span>`;
+
+            const wrapper = document.createElement('div');
+            wrapper.className = 'editor-wrapper';
+
+            const textarea = document.createElement('textarea');
+            textarea.className = 'editor-textarea';
+            textarea.id = `editor-${type}`;
+            textarea.value = initialValue;
+            textarea.spellcheck = false;
+            textarea.wrap = "off"; // Better for code editing
+
+            const highlight = document.createElement('div');
+            highlight.className = 'editor-highlight';
+            highlight.id = `highlight-${type}`;
+
+            wrapper.appendChild(highlight);
+            wrapper.appendChild(textarea);
+            box.appendChild(header);
+            box.appendChild(wrapper);
+
+            const update = () => {
+                applyHighlight(textarea.value, highlight, type);
+                updatePlayground();
+            };
+
+            textarea.oninput = () => {
+                syncScroll(textarea, highlight);
+                update();
+            };
+
+            textarea.onscroll = () => syncScroll(textarea, highlight);
+
+            textarea.onkeydown = (e) => {
+                if (e.key === 'Tab') {
+                    e.preventDefault();
+                    const start = textarea.selectionStart;
+                    const end = textarea.selectionEnd;
+                    textarea.value = textarea.value.substring(0, start) + "    " + textarea.value.substring(end);
+                    textarea.selectionStart = textarea.selectionEnd = start + 4;
+                    update();
+                }
+            };
+
+            // Initial highlight
+            setTimeout(() => {
+                applyHighlight(initialValue, highlight, type);
+            }, 0);
+
+            return box;
+        }
+
+        // Helper to update playground content
+        function highlightHTML(code) {
+            if (!code) return '';
+
+            // 1. Escape HTML first
+            let escaped = code.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+            // 2. Tokenize to avoid self-referential regex matching (prevent "token-attr" bug)
+            // Use specialized placeholders that won't trigger the attribute regex
+            let out = escaped
+                .replace(/(&lt;!--.*?--&gt;)/gs, '___COM___$1___END___')
+                .replace(/(&lt;\/?[a-z1-6]+)/gi, '___TAG___$1___END___')
+                .replace(/(&gt;)/g, '___TAG___$1___END___')
+                .replace(/(\s)([a-z-]+)=/gi, '$1___ATTR___$2___END___=')
+                .replace(/=(?:&quot;|"|')(.*?)(?:&quot;|"|')/g, '=___STR___"$1"___END___');
+
+            // 3. Render Tokens to final HTML
+            return out
+                .replace(/___COM___/g, '<span class="token-comment">')
+                .replace(/___TAG___/g, '<span class="token-tag">')
+                .replace(/___ATTR___/g, '<span class="token-attr">')
+                .replace(/___STR___/g, '<span class="token-string">')
+                .replace(/___END___/g, '</span>');
+        }
+
+        function highlightCSS(code) {
+            let highlighted = code
+                .replace(/(\/\*.*?\*\/)/gs, '<span class="token-comment">$1</span>')
+                .replace(/([^{}]+)(?=\s*\{)/g, (match) => match.replace(/([.#][a-z0-9_-]+|:[a-z-]+|[a-z0-9*_-]+)/gi, '<span class="token-selector">$1</span>'))
+                .replace(/([a-z-]+)\s*:\s*([^;{}]+)/gi, '<span class="token-property">$1</span>: <span class="token-value">$2</span>')
+                .replace(/([0-9.]+)(px|%|em|rem|vh|vw|deg|s|ms)/gi, '<span class="token-number">$1</span><span class="token-unit">$2</span>')
+                .replace(/([{}():;,])/g, '<span class="token-punctuation">$1</span>');
+
+            return highlighted.replace(/__HL_START__(.*?)__HL_END__/g, '<span class="highlight-changed">$1</span>');
+        }
+
+        function updatePlayground() {
+            const htmlEditor = document.getElementById('editor-html');
+            const cssEditor = document.getElementById('editor-css');
+            const preview = document.getElementById('playgroundContent');
+
+            if (!htmlEditor || !cssEditor || !preview) return;
+
+            const html = htmlEditor.value;
+            const css = cssEditor.value;
+
+            playgroundState.html = html;
+            playgroundState.css = css;
+            saveSessionState();
+
+            // Apply CSS
+            let style = document.getElementById('playground-style');
+            if (!style) {
+                style = document.createElement('style');
+                style.id = 'playground-style';
+                document.head.appendChild(style);
+            }
+            style.textContent = css;
+            preview.innerHTML = html;
+        }
+
+        init();
+    </script>
+</body>
+
+</html>
